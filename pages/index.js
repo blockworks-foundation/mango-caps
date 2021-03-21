@@ -45,7 +45,7 @@ export default function Home() {
           <WalletButton />
         </div>
       </div>
-  
+
       <div className="flex justify-center">
         <Content>
           <Card />

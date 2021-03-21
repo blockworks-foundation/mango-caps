@@ -1,5 +1,7 @@
-
 import styled from 'styled-components'
+
+import { useWallet } from '../providers/wallet'
+
 
 const Button = styled.button`
   color: #FFFFFF;
@@ -22,13 +24,27 @@ const connected = true;
 const walletHash = '0x24da3...';
 
 export default function WalletButton() {
+
+  const { connected, wallet } = useWallet();
+
+  function handleClick() {
+    if (!connected) {
+      wallet.connect();
+    } else {
+      wallet.disconnect();
+    }
+  };
+
   return (
     <>
-    <Button style={{background: connected ? bgConnected : bgDisconnected}}>
-      <div className="space-x-2">
-        <span>🔑</span>
-        <span>{walletHash}</span>
-      </div>
+    <Button onClick={handleClick} style={{background: connected ? bgConnected : bgDisconnected}}>
+      { (wallet && connected) &&
+        <div className="space-x-2">
+          <span>🔑</span>
+          <span>{walletHash}</span>
+        </div>
+      }
+      { (!(wallet && connected)) && "Connect Wallet" }
     </Button>
     </>
   );
