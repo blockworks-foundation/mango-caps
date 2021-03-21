@@ -5,7 +5,6 @@ const Button = styled.button`
   color: #FECA1A;
   border: 2px solid #FECA1A;
   border-radius: 10px;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   transform: scale(1);
   transition: transform 0.3s ease 0s;
 

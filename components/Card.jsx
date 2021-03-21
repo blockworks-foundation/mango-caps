@@ -13,7 +13,7 @@ export default function Card() {
 
   return (
     <Tilt
-      style={{ background: '#000', borderRadius: '8px' }}
+      style={{ background: '#000', borderRadius: '20px' }}
       options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
     >
       <CardWrapper>
@@ -41,7 +41,7 @@ const CardWrapper = styled.div`
   background: #000000;
   background: linear-gradient(162.92deg, #2b2b2b 12.36%, #000000 94.75%);
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
+  border-radius: 20px;
   color: white;
   display: flex;
   flex-direction: column;
@@ -50,7 +50,7 @@ const CardWrapper = styled.div`
   align-items: center;
   cursor: default;
   padding: 24px;
-  z-index: 1;
+  z-index: 2;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
 `
 
