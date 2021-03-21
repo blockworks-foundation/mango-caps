@@ -3,12 +3,17 @@ import Head from 'next/head'
 import Logo from '../components/Logo'
 import StatsButton from  '../components/StatsButton'
 import WalletButton from  '../components/WalletButton'
+import BuyButton from  '../components/BuyButton'
+import SellButton from  '../components/SellButton'
+import Redeem from  '../components/Redeem'
+
 
 import Card from '../components/Card'
-
+import InfoCard from '../components/InfoCard'
 import styled from 'styled-components'
 
 const Page = styled.div`
+  max-width: 100vw;
   min-height: 100vh;
   padding: 0 0.5rem;
 `
@@ -45,10 +50,17 @@ export default function Home() {
           <WalletButton />
         </div>
       </div>
-
+  
       <div className="flex justify-center">
         <Content>
           <Card />
+          <InfoCard />
+          <BuyButton />
+
+          <div className="flex">
+          <SellButton />
+          <Redeem />
+          </div>
         </Content>
       </div>
     </Page>
