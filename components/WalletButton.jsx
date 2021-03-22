@@ -1,7 +1,5 @@
 import styled from 'styled-components'
-
 import { useWallet } from '../providers/wallet'
-
 
 const Button = styled.button`
   color: #FFFFFF;

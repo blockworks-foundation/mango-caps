@@ -8,7 +8,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 
-const CFG = {
+export const CFG = {
   'mainnet-beta': {
     url: 'https://solana-api.projectserum.com/',
     swapProgramId: 'HbHpkEBvbPVTDPsqWZi7AWgcUZppbmj1YPU4FdxV93kZ',
@@ -20,7 +20,7 @@ const CFG = {
     url: clusterApiUrl('devnet'),
     swapProgramId: 'GKZabbjt1rQ5V8at9axSu5pefGqF4JeHt8f7owt6CHpJ',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: '',
+    capMint: 'AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8',
     usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
   },
 };

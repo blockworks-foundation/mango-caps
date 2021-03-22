@@ -1,12 +1,15 @@
 import '../styles/globals.css'
 import { ConnectionProvider } from '../providers/connection'
 import { WalletProvider } from '../providers/wallet'
+import { AccountsProvider } from '../providers/accounts'
 
 function MyApp({ Component, pageProps }) {
   return (
     <ConnectionProvider>
       <WalletProvider>
-        <Component {...pageProps} />
+        <AccountsProvider>
+          <Component {...pageProps} />
+        </AccountsProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
