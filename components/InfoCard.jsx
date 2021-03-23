@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import InfoModal from '../components/InfoModal'
 
-import Gallery from './Gallery'
-
-export default function Card() {
-
+export default function InfoCard() {
+const [isOpen, setIsOpen] = useState(false)
   return (
       <CardWrapper>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed. do eiusmod</Text>
+        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed. <span onClick={() => setIsOpen(true)}>do eiusmod</span></Text>
+        <InfoModal open={isOpen} onClose={() => setIsOpen(false)} />
       </CardWrapper>
+
   )
 }
 

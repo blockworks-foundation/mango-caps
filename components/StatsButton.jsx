@@ -1,5 +1,8 @@
 
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import StatsModal from '../components/StatsModal'
+
 
 const Button = styled.button`
   color: #FECA1A;
@@ -17,14 +20,18 @@ const numRedeemed = 102;
 
 
 export default function StatsButton() {
+
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <>
-    <Button>
+    <Button onClick={() => setIsOpen(true)}>
       <div className="space-x-2">
         <span>🔥</span>
         <span>{numRedeemed} redeemed</span>
       </div>
     </Button>
+    <StatsModal open={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }

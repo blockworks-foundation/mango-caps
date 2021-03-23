@@ -1,5 +1,7 @@
 
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import BuyModal from '../components/BuyModal'
 
 const Button = styled.button`
   color: #FFFFFF;
@@ -20,11 +22,14 @@ const Button = styled.button`
 `
 
 export default function BuyButton() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <>
-    <Button>
+    <Button onClick={() => setIsOpen(true)}>
         <span>Buy</span>
     </Button>
+    <BuyModal open={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }
