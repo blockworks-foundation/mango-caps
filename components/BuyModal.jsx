@@ -1,11 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import IncrementToken from './IncrementToken'
 import Gallery from './Gallery'
+
 
 
 export default function BuyModal({open, onClose}) {
 if (!open) return null
+
+  const dollarPrice = "14.02";
+  const amountAvailable = 14;
+  const totalSupply = 500;
 
   return (
         <>
@@ -23,13 +29,25 @@ if (!open) return null
       /> Buy $MCAP</Title>
                 </div>
           <Gallery />
-
-          <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed. do eiusmod</Text>
+          <FullWidth>
+          <MarketData>
+          <span>
+            <CurrentPrice>{`$${dollarPrice} USD`}</CurrentPrice>
+            <CapCount>
+              {`${amountAvailable}/${totalSupply} available`}
+            </CapCount>
+          </span>
+          <Increment>
+             <IncrementToken />
+          </Increment>
+        </MarketData>
+          </FullWidth>
         </CardWrapper>
         <InfoCard>
           <TitleSub>Here's what you owe:</TitleSub>
           <Price>$14.00</Price>
-          <Button>Buy</Button>    
+          <Button>Buy</Button>  
+          <br />  
           <button onClick={onClose}>Close</button>
         </InfoCard>
         </>
@@ -45,6 +63,9 @@ const OVERLAY_STYLES = styled.div`
   background: #000;
   opacity: .8;
   z-index:998;
+`
+const FullWidth = styled.div`
+  width: 100%;
 `
 
 const CardWrapper = styled.div`
@@ -68,15 +89,15 @@ const CardWrapper = styled.div`
   z-index: 1000;
 `
 const InfoCard = styled.div`
-    position: fixed;
-      width: 400px;
+  position: fixed;
+  width: 400px;
   top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
-    width: 400px;
-    height: auto;
-    background: #EFEDF9;
-    border-radius: 0 0 20px 20px;
+  width: 400px;
+  height: auto;
+  background: #EFEDF9;
+  border-radius: 0 0 20px 20px;
   color: #000;
   display: flex;
   flex-direction: column;
@@ -85,11 +106,30 @@ const InfoCard = styled.div`
   padding: 24px;
   z-index: 999;
 `
-const Text = styled.p`
-  font-weight: 500;
-  font-size: 18px;
+const MarketData = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
   width: 100%;
-  margin: 0;
+  margin-top: 1rem;
+`
+const CurrentPrice = styled.p`
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0px;
+  margin-bottom: 0.5rem;
+  font-feature-settings: 'tnum' on, 'onum' on;
+`
+const CapCount = styled.p`
+  color: #aeaeae;
+  font-weight: 400;
+  margin: 0px;
+  font-size: 12px;
+  font-feature-settings: 'tnum' on, 'onum' on;
+`
+const Increment = styled.div`
+  /* margin-bottom: -2px; */
 `
 
 const Title = styled.p`
