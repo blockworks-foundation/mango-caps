@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Tilt from 'react-tilt'
 
 import Gallery from './Gallery'
+import { usePrice } from '../providers/price'
+
 
 export default function Card() {
 
-  const dollarPrice = "14.02";
-  const amountAvailable = 14;
-  const totalSupply = 500;
-
+  const {
+    amountToBuy,
+    setAmountToBuy,
+    amountAvailable,
+    totalSupply,
+    price,
+    formattedPrice
+  } = usePrice();
 
   return (
     <Tilt
@@ -17,12 +23,12 @@ export default function Card() {
       options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
     >
       <CardWrapper>
-        <Title>Mango Market Cap Edition 0</Title>
-        <SubTitle>$MCAP</SubTitle>
+        <Title>Mango Market Caps Edition 0</Title>
+        <SubTitle>$MCAPS</SubTitle>
         <Gallery />
         <MarketData>
           <span>
-            <CurrentPrice>{`$${dollarPrice} USD`}</CurrentPrice>
+            <CurrentPrice>{`$${formattedPrice} USD`}</CurrentPrice>
             <SockCount>
               {`${amountAvailable}/${totalSupply} available`}
             </SockCount>
@@ -64,9 +70,7 @@ const Title = styled.p`
 
 const SubTitle = styled.p`
   color: #524646;
-  font-family: Inter;
-  font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 18px;
   line-height: 156.7%;
   width: 100%;

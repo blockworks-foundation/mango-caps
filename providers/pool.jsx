@@ -33,14 +33,16 @@ export function PoolProvider({ children }) {
 
   const { config, connection } = useConnection();
 
-  const [pool, setPool] = useState({});
+  const [pool, setPool] = useState();
 
   useEffect(async () => {
     let response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId));
     let allPools = await Promise.all(response
                     .filter(s => s.account.data.length === TokenSwapLayout.span)
-                    .map(s => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId)));
-    setPool(allPools.find(p => p.pubkeys.holdingMints.map(m => m.toString()) === [config.capMint, config.usdMint]));
+      .map(s => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId)));
+    setPool(allPools.find(p =>
+      p.pubkeys.holdingMints.map(m => m.toString()).toString() ===
+      [config.capMint, config.usdMint].toString()));
   }, [config, connection]);
 
   return (

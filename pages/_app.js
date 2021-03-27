@@ -3,6 +3,7 @@ import { ConnectionProvider } from '../providers/connection'
 import { WalletProvider } from '../providers/wallet'
 import { AccountsProvider } from '../providers/accounts'
 import { PoolProvider } from '../providers/pool'
+import { PriceProvider } from '../providers/price'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -10,7 +11,9 @@ function MyApp({ Component, pageProps }) {
       <WalletProvider>
         <AccountsProvider>
           <PoolProvider>
-            <Component {...pageProps} />
+            <PriceProvider>
+              <Component {...pageProps} />
+            </PriceProvider>
           </PoolProvider>
         </AccountsProvider>
       </WalletProvider>
