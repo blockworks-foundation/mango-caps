@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@project-serum/sol-wallet-adapter": "^0.1.6",
-    "@solana/spl-token": "^0.1.1",
-    "@solana/spl-token-swap": "^0.0.4",
-    "@solana/web3.js": "^0.82.0",
+    "@solana/spl-token": "0.0.11",
+    "@solana/spl-token-swap": "0.0.2",
+    "@solana/web3.js": "^0.86.2",
     "next": "10.0.9",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -21,6 +21,7 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.0",
     "@types/node": "^14.14.35",
     "@types/react": "^17.0.3",
     "autoprefixer": "^10.2.5",

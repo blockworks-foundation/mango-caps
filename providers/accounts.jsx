@@ -39,13 +39,13 @@ class u64 extends BN {
   }
 }
 
-function parseAccount(pubkey, data) {
+function parseAccount(publicKey, data) {
   const decoded = AccountLayout.decode(data);
   return {
     amount: u64.fromBuffer(decoded.amount),
     mint: new PublicKey(decoded.mint),
     owner: new PublicKey(decoded.owner),
-    pubkey
+    publicKey
   };
 }
 
