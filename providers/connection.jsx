@@ -30,7 +30,7 @@ const ConnectionContext = React.createContext();
 export function ConnectionProvider({ children }) {
   const [cluster, setCluster] = useState('devnet');
   const config = useMemo(() => CFG[cluster]);
-  const connection = useMemo(() => new Connection(config.url, 'singleGossip'), [config]);
+  const connection = useMemo(() => new Connection(config.url, 'recent'), [config]);
 
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.

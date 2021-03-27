@@ -29,6 +29,10 @@ export const WRAPPED_SOL_MINT = new PublicKey(
   "So11111111111111111111111111111111111111112"
 );
 
+export const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
+  "HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN"
+);
+
 export interface TokenAccount {
   pubkey: PublicKey;
   account: AccountInfo<Buffer>;
@@ -633,7 +637,7 @@ export const swap = async (
   components: LiquidityComponent[],
   SLIPPAGE: number,
   programIds: ProgramIds,
-  hostFeeAddress: PublicKey,
+  hostFeeAddress?: PublicKey,
   pool?: PoolInfo,
 ) => {
   if (!pool || !components[0].account) {
@@ -1063,7 +1067,7 @@ export async function addLiquidityNewPool(
     wallet.publicKey,
     accountRentExempt,
     liquidityTokenMint.publicKey,
-    wallet.publicKey,
+    SWAP_PROGRAM_OWNER_FEE_ADDRESS || wallet.publicKey,
     AccountLayout.span,
     programIds
   );
@@ -1123,7 +1127,7 @@ export async function addLiquidityNewPool(
 
     instructions.push(
       Token.createTransferInstruction(
-        TokenSwapLayout,
+        programIds.token,
         from,
         holdingAccounts[i].publicKey,
         wallet.publicKey,
@@ -1150,6 +1154,7 @@ export async function addLiquidityNewPool(
     )
   );
 
+
   // All instructions didn't fit in single transaction
   // initialize and provide inital liquidity to swap in 2nd (this prevents loss of funds)
   tx = await sendTransaction(
@@ -1160,7 +1165,7 @@ export async function addLiquidityNewPool(
   );
 
   notify({
-    message: "Pool Funded. Happy trading.",
+    message: `Pool ${tokenSwapAccount.publicKey} Funded. Happy trading.`,
     type: "success",
     description: `Transaction - ${tx}`,
   });
@@ -1480,7 +1485,7 @@ const accountsCache = new Map<string, TokenAccount>();
 const pendingCalls = new Map<string, Promise<ParsedAccountBase>>();
 const genericCache = new Map<string, ParsedAccountBase>();
 
-function tokenAccountFactory(pubKey: PublicKey, info: AccountInfo<Buffer>) {
+export function tokenAccountFactory(pubKey: PublicKey, info: AccountInfo<Buffer>) {
   const buffer = Buffer.from(info.data);
 
   const data = deserializeAccount(buffer);

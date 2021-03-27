@@ -1,10 +1,10 @@
-import { TokenSwap, CurveType } from '@solana/spl-token-swap'
+import { TokenSwap } from '@solana/spl-token-swap'
 import { PublicKey } from "@solana/web3.js";
 
 import styled from 'styled-components'
 
 import WalletButton from  '../components/WalletButton'
-import { addLiquidity } from '../lib/pool'
+import { addLiquidityNewPool, CurveType } from '../lib/pool'
 import { useConnection } from '../providers/connection'
 import { usePool } from '../providers/pool'
 import { useWallet } from '../providers/wallet'
@@ -42,22 +42,25 @@ export default function Setup() {
   const { connected, wallet } = useWallet();
   const { capAccount, usdAccount } = useAccounts();
 
+  console.log( { connection, config, connected, wallet, capAccount, usdAccount } );
   function createSwap() {
     console.log( { connection, config, connected, wallet, capAccount, usdAccount } );
     if (connected) {
       addLiquidityNewPool(
         wallet,
         connection,
-        [ {mintAddress: config.capMint, account: capAccount, amount: 500},
-          {mintAddress: config.usdMint, account: usdAccount, amount: 1000 * 100000000}],
+        [ {mintAddress: config.capMint, account: capAccount, amount: 1000},
+          {mintAddress: config.usdMint, account: usdAccount, amount: 12000 * 1000000000}],
         { curveType: CurveType.ConstantProduct,
-          token_b_offset: 5000,
-          tradeFeeNumerator: 10,
+          token_b_offset: 12000,
+          tradeFeeNumerator: 25,
           tradeFeeDenominator: 10000,
-          ownerTradeFeeNumerator: 0,
-          ownerTradeFeeDenominator: 1,
+          ownerTradeFeeNumerator: 5,
+          ownerTradeFeeDenominator: 10000,
           ownerWithdrawFeeNumerator: 0,
-          ownerWithdrawFeeDenominator: 1 },
+          ownerWithdrawFeeDenominator: 0,
+          hostFeeNumerator: 20,
+          hostFeeDenominator: 100 },
         { token: new PublicKey(config.tokenProgramId),
           swap: new PublicKey(config.swapProgramId) });
     }
@@ -74,8 +77,8 @@ export default function Setup() {
         <div>
           <Label>2.</Label>
           USD / CAP
-          <pre>{usdAccount?.publicKey?.toString()}</pre>
-          <pre>{capAccount?.publicKey?.toString()}</pre>
+          <pre>{usdAccount?.pubkey?.toString()}</pre>
+          <pre>{capAccount?.pubkey?.toString()}</pre>
         </div>
         <div>
           <Label>3.</Label>

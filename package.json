@@ -9,7 +9,7 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@project-serum/sol-wallet-adapter": "^0.1.6",
+    "@project-serum/sol-wallet-adapter": "0.1.1",
     "@solana/spl-token": "0.0.11",
     "@solana/spl-token-swap": "0.0.2",
     "@solana/web3.js": "^0.86.2",

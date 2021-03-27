@@ -15,7 +15,6 @@ const PoolContext = React.createContext();
 const toPublicKey = (s) => new PublicKey(s);
 
 async function toPoolInfo(data, account, program) {
-  console.log('toPoolInfo', data);
   return {
     pubkeys: {
       account,
@@ -38,13 +37,10 @@ export function PoolProvider({ children }) {
 
   useEffect(async () => {
     let response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId));
-    console.log(response);
     let allPools = await Promise.all(response
                     .filter(s => s.account.data.length === TokenSwapLayout.span)
                     .map(s => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId)));
-    console.log(allPools);
     setPool(allPools.find(p => p.pubkeys.holdingMints.map(m => m.toString()) === [config.capMint, config.usdMint]));
-    console.log(allPools.map(p => p.pubkeys.holdingMints.map(m => m.toString())));
   }, [config, connection]);
 
   return (
