@@ -23,8 +23,8 @@ const CardWrapper = styled.div`
   justify-content: center;
   align-items: center;
   cursor: default;
-  padding: 24px;
-  margin-top: -10px;
+  padding: 26px;
+  margin-top: -16px;
   z-index: -2;
 `
 
