@@ -12,6 +12,7 @@ export default function Logo() {
       />
       <div
         style={{
+          color: '#fff',
           fontSize: 26,
           fontWeight: 700,
           display: 'inline-block',

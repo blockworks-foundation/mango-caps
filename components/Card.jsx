@@ -38,10 +38,10 @@ export default function Card() {
 }
 
 const CardWrapper = styled.div`
-  background: #000000;
-  background: linear-gradient(162.92deg, #2b2b2b 12.36%, #000000 94.75%);
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
-  border-radius: 20px;
+  background: #FFFFFF;
+  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #E54033 0%, #FECA1A 51.79%, #AFD803 83.48%);
+  box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
+  border-radius: 18px;
   color: white;
   display: flex;
   flex-direction: column;
@@ -55,7 +55,7 @@ const CardWrapper = styled.div`
 `
 
 const Title = styled.p`
-  font-weight: 500;
+  font-weight: 800;
   font-size: 24px;
   line-height: 126.7%;
   width: 100%;
@@ -63,7 +63,7 @@ const Title = styled.p`
 `
 
 const SubTitle = styled.p`
-  color: #6c7284;
+  color: #524646;
   font-family: Inter;
   font-style: normal;
   font-weight: 500;
@@ -75,18 +75,18 @@ const SubTitle = styled.p`
 `
 
 const SockCount = styled.p`
-  color: #aeaeae;
+  color: #605a77;
   font-weight: 400;
   margin: 0px;
-  font-size: 12px;
+  font-size: 13px;
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 
 const CurrentPrice = styled.p`
   font-weight: 600;
-  font-size: 18px;
+  font-size: 24px;
   margin: 0px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 
@@ -95,12 +95,12 @@ const Info = styled.div`
 `
 
 const Dynamic = styled.p`
-  color: #aeaeae;
+  color: #605a77;
   font-style: italic;
   font-weight: 400;
   margin: 0px;
   margin-top: 1px;
-  font-size: 12px;
+  font-size: 13px;
   float: left;
 `
 
@@ -114,7 +114,7 @@ const InfoButton = styled.span`
   border-radius: 50%;
   margin-left: 8px;
   float: right;
-  background-color: #5ca2ff;
+  background-color: #f49524;
 `
 
 const MarketData = styled.div`

@@ -9,7 +9,6 @@ const GalleryFrame = styled.div`
   display: flex;
   align-items: center;
   flex-direction: center;
-  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.05);
 `
 
 const ImgStyle = styled.img`
