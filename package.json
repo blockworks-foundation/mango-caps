@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "watch": "tsc --watch"
   },
   "dependencies": {
-    "@project-serum/sol-wallet-adapter": "^0.1.6",
-    "@solana/web3.js": "^0.82.0",
+    "@project-serum/sol-wallet-adapter": "0.1.1",
+    "@solana/spl-token": "0.0.11",
+    "@solana/spl-token-swap": "0.0.2",
+    "@solana/web3.js": "^0.86.2",
     "next": "10.0.9",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -18,8 +21,13 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.0",
+    "@types/node": "^14.14.35",
+    "@types/react": "^17.0.3",
     "autoprefixer": "^10.2.5",
+    "babel-plugin-styled-components": "^1.12.0",
     "postcss": "^8.2.8",
-    "tailwindcss": "^2.0.4"
+    "tailwindcss": "^2.0.4",
+    "typescript": "^4.2.3"
   }
 }
