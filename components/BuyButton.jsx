@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import BuyModal from '../components/BuyModal'
+import { PriceProvider } from '../providers/price'
 
 const Button = styled.button`
   color: #FFFFFF;
@@ -26,10 +27,12 @@ export default function BuyButton() {
 
   return (
     <>
-    <Button onClick={() => setIsOpen(true)}>
+      <Button onClick={() => setIsOpen(true)}>
         <span>Buy</span>
-    </Button>
-    <BuyModal open={isOpen} onClose={() => setIsOpen(false)} />
+      </Button>
+      <PriceProvider>
+        <BuyModal open={isOpen} onClose={() => setIsOpen(false)} />
+      </PriceProvider>
     </>
   );
 }

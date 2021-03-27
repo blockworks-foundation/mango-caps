@@ -3,15 +3,23 @@ import styled from 'styled-components'
 
 import IncrementToken from './IncrementToken'
 import Gallery from './Gallery'
-
+import { usePrice } from '../providers/price'
 
 
 export default function BuyModal({open, onClose}) {
+
+
+
 if (!open) return null
 
-  const dollarPrice = "14.02";
-  const amountAvailable = 14;
-  const totalSupply = 500;
+  const {
+    amountToBuy,
+    setAmountToBuy,
+    amountAvailable,
+    totalSupply,
+    price,
+    formattedPrice
+  } = usePrice();
 
   return (
         <>
@@ -32,20 +40,20 @@ if (!open) return null
           <FullWidth>
           <MarketData>
           <span>
-            <CurrentPrice>{`$${dollarPrice} USD`}</CurrentPrice>
+            <CurrentPrice>${formattedPrice} USD</CurrentPrice>
             <CapCount>
               {`${amountAvailable}/${totalSupply} available`}
             </CapCount>
           </span>
           <Increment>
-             <IncrementToken />
+             <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} />
           </Increment>
         </MarketData>
           </FullWidth>
         </CardWrapper>
         <InfoCard>
           <TitleSub>Here's what you owe:</TitleSub>
-          <Price>$14.00</Price>
+          <Price>${formattedPrice}</Price>
           <Button>Buy</Button>  
           <br />  
           <button onClick={onClose}>Close</button>

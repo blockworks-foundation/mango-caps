@@ -36,7 +36,7 @@ const SelectMenu = styled.div`
   text-align: center;
 `
 
-const IncrementButton = styled.span`
+const IncrementButton = styled.button`
   cursor: pointer;
   user-select: none;
   width: 48px;
@@ -48,16 +48,23 @@ const IncrementButton = styled.span`
   justify-content: center;
 `
 
-export default function IncrementToken() {
+export default function IncrementToken(props) {
+
+  const mangoMarketCapScalperCap = 5;
+
+  function incrementAmount(inc) {
+    props.setAmount(Math.max(1, Math.min(mangoMarketCapScalperCap,props.amount + inc)));
+  }
 
   return (
     <SelectFrame>
-      <IncrementButton justify={'flex-start'} >
+      <IncrementButton style={{color: 1 == props.amount ? 'transparent' : 'black'}} justify={'flex-start'} onClick={() => incrementAmount(-1)} >
         -
       </IncrementButton>
-      <SelectMenu>1</SelectMenu>
+      <SelectMenu>{props.amount}</SelectMenu>
 
-      <IncrementButton justify={'flex-end'} >
+      <IncrementButton style={{color: mangoMarketCapScalperCap == props.amount ? 'transparent' : 'black'}}
+        justify={'flex-end'} onClick={() => incrementAmount(1)} >
         +
       </IncrementButton>
     </SelectFrame>

@@ -28,7 +28,7 @@ export default function Card() {
         <Gallery />
         <MarketData>
           <span>
-            <CurrentPrice>{`$${formattedPrice} USD`}</CurrentPrice>
+            <CurrentPrice>${formattedPrice} USD</CurrentPrice>
             <SockCount>
               {`${amountAvailable}/${totalSupply} available`}
             </SockCount>
