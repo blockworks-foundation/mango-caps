@@ -3,15 +3,28 @@ import styled from 'styled-components'
 
 import IncrementToken from './IncrementToken'
 import Gallery from './Gallery'
+import { bgConnected, bgDisconnected } from './WalletButton'
+import { useAccounts } from '../providers/accounts'
+import { useConnection } from '../providers/connection'
 import { usePrice } from '../providers/price'
+import { usePool } from '../providers/pool'
+import { useWallet } from '../providers/wallet'
+import { cache, swap } from '../lib/pool'
+
+
+import {
+  PublicKey,
+} from "@solana/web3.js";
 
 
 export default function BuyModal({open, onClose}) {
 
+  if (!open) return null
 
-
-if (!open) return null
-
+  const { connection, config } = useConnection();
+  const { wallet, connected } = useWallet();
+  const { capAccount, usdAccount } = useAccounts();
+  const { pool } = usePool();
   const {
     amountToBuy,
     setAmountToBuy,
@@ -21,8 +34,31 @@ if (!open) return null
     formattedPrice
   } = usePrice();
 
+
+  const handleClick = async function() {
+
+    if (!connected) {
+      wallet.connect();
+      return
+    }
+
+    const components = [
+      {mintAddress: config.usdMint, account: usdAccount, amount: price * 1000000000},
+      {mintAddress: config.capMint, account: capAccount, amount: amountToBuy}];
+    const slippage = 0.02;
+    const programIds = {
+      token: new PublicKey(config.tokenProgramId),
+      swap: new PublicKey(config.swapProgramId) };
+
+    console.log({connection, wallet, components, slippage, programIds, undefined, pool});
+
+    await swap(connection, wallet, components, slippage, programIds, undefined, pool);
+  };
+
+  const loadingAccounts = connected && !(usdAccount && capAccount && pool)
+
   return (
-        <>
+    <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
         <CardWrapper>
         <div className="TitleCard">
@@ -54,7 +90,12 @@ if (!open) return null
         <InfoCard>
           <TitleSub>Here's what you owe:</TitleSub>
           <Price>${formattedPrice}</Price>
-          <Button>Buy</Button>  
+          <Button disabled={loadingAccounts} onClick={handleClick} style={{
+            background: connected ? bgConnected : bgDisconnected,
+            opacity: loadingAccounts ? "50%" : "100%"}}>
+            { loadingAccounts && "⏳ (loading) " }
+            { wallet && connected ? "Buy" : "Connect Wallet" }
+          </Button>  
           <br />  
           <button onClick={onClose}>Close</button>
         </InfoCard>
@@ -178,7 +219,6 @@ const Button = styled.button`
   box-shadow: 0px 5px 11px rgba(170, 131, 0, 0.29);
   transform: scale(1);
   transition: transform 0.3s ease 0s;
-  background: linear-gradient(90.85deg, #6CBF00 -19.66%, #AFD803 128.7%);
   box-sizing: border-box;
   padding: .87rem;
   line-height: 1;

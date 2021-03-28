@@ -628,6 +628,7 @@ export const LIQUIDITY_PROVIDER_FEE = 0.003;
 export const SERUM_FEE = 0.0005;
 
 export const isLatest = (swap: AccountInfo<Buffer>) => {
+  return true;
   return swap.data.length === TokenSwapLayout.span;
 };
 
@@ -652,8 +653,8 @@ export const swap = async (
   // Uniswap whitepaper: https://uniswap.org/whitepaper.pdf
   // see: https://uniswap.org/docs/v2/advanced-topics/pricing/
   // as well as native uniswap v2 oracle: https://uniswap.org/docs/v2/core-concepts/oracles/
-  const amountIn = components[0].amount; // these two should include slippage
-  const minAmountOut = components[1].amount * (1 - SLIPPAGE);
+  const amountIn = components[0].amount * (1 + SLIPPAGE); // these two should include slippage
+  const minAmountOut = components[1].amount;
   const holdingA =
     pool.pubkeys.holdingMints[0]?.toBase58() ===
     components[0].account.info.mint.toBase58()

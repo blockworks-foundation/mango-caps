@@ -14,13 +14,13 @@ export function AccountsProvider({ children }) {
   const { config, connection } = useConnection();
   const { connected, wallet } = useWallet();
 
-  const [capAccount, setCapAccount] = useState({});
-  const [usdAccount, setUsdAccount] = useState({});
+  const [capAccount, setCapAccount] = useState();
+  const [usdAccount, setUsdAccount] = useState();
 
   useEffect(async () => {
     if (!connected || !connection || !wallet?.publicKey) {
-      setCapAccount({});
-      setUsdAccount({});
+      setCapAccount();
+      setUsdAccount();
       return;
     }
 

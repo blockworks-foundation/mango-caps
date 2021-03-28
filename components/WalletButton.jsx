@@ -15,8 +15,8 @@ const Button = styled.button`
   letter-spacing: 0.01em;
 `
 
-const bgConnected = 'linear-gradient(90.85deg, #6CBF00 -19.66%, #AFD803 128.7%)';
-const bgDisconnected = 'linear-gradient(90.85deg, #E54033 -19.66%, #FECA1A 128.7%)'
+export const bgConnected = 'linear-gradient(90.85deg, #6CBF00 -19.66%, #AFD803 128.7%)';
+export const bgDisconnected = 'linear-gradient(90.85deg, #E54033 -19.66%, #FECA1A 128.7%)';
 
 const connected = true;
 const walletHash = '0x24da3...';
