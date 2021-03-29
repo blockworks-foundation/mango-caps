@@ -15,13 +15,15 @@ export const CFG = {
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     capMint: '',
     usdMint: '',
+    capAmount: 0,
   },
   'devnet': {
     url: clusterApiUrl('devnet'),
-    swapProgramId: 'SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8',
+    swapProgramId: '4agVeHTmm3Uis4Wt84NhrQXpEaV1Sb1HZmFvnkMQzDi4',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: 'AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8',
+    capMint: 'ApXpz6g1SX8RxN2MWxKQg24o91XLZ3HcySj6sxgfMymK',
     usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
+    capAmount: 1000,
   },
 };
 

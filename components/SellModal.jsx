@@ -17,26 +17,24 @@ import {
 } from "@solana/web3.js";
 
 
-export default function BuyModal({open, onClose}) {
+export default function SellModal({open, onClose}) {
 
   if (!open) return null
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { capAccount, usdAccount } = useAccounts();
+  const { capAccount, usdAccount, refreshAccounts } = useAccounts();
   const { pool } = usePool();
   const {
-    amountToBuy,
-    setAmountToBuy,
+    amountToSell,
+    setAmountToSell,
     amountAvailable,
-    totalSupply,
     price,
-    formattedPrice,
-    refreshAvailable
+    formattedPrice
   } = usePrice();
 
+  const [selling, setSelling] = useState(false);
 
-  const [buying, setBuying] = useState(false);
 
   const handleClick = async function() {
 
@@ -45,12 +43,12 @@ export default function BuyModal({open, onClose}) {
       return
     }
 
-    setBuying(true);
+    setSelling(true);
 
-    const slippage = 1.05;
+    const slippage = 100;
     const components = [
-      {mintAddress: config.usdMint, account: usdAccount, amount: price * 1000000000 * slippage},
-      {mintAddress: config.capMint, account: capAccount, amount: amountToBuy}];
+      {mintAddress: config.capMint, account: capAccount, amount: amountToSell},
+      {mintAddress: config.usdMint, account: usdAccount, amount: price * 1000000000 / slippage}]
     const programIds = {
       token: new PublicKey(config.tokenProgramId),
       swap: new PublicKey(config.swapProgramId) };
@@ -58,12 +56,12 @@ export default function BuyModal({open, onClose}) {
     console.log({connection, wallet, components, slippage, programIds, undefined, pool});
 
     await swap(connection, wallet, components, programIds, undefined, pool);
-    await refreshAvailable();
+    await refreshAccounts();
 
-    setBuying(false);
+    setSelling(false);
   };
 
-  const loadingAccounts = connected && !(usdAccount && pool && !buying)
+  const loadingAccounts = connected && !(usdAccount && capAccount && pool && !selling)
 
   return (
     <>
@@ -78,7 +76,7 @@ export default function BuyModal({open, onClose}) {
           display: 'inline-block',
           verticalAlign: 'middle',
         }}
-      /> Buy $MCAP</Title>
+      /> Sell $MCAP</Title>
                 </div>
           <Gallery />
           <FullWidth>
@@ -86,23 +84,23 @@ export default function BuyModal({open, onClose}) {
           <span>
             <CurrentPrice>${formattedPrice} USD</CurrentPrice>
             <CapCount>
-              {`${amountAvailable}/${totalSupply} available`}
+              {`You own ${amountAvailable}`}
             </CapCount>
           </span>
           <Increment>
-             <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={1} max={5} />
+             <IncrementToken amount={amountToSell} setAmount={setAmountToSell} min={1} max={amountAvailable} />
           </Increment>
         </MarketData>
           </FullWidth>
         </CardWrapper>
         <InfoCard>
-          <TitleSub>Here's what you owe:</TitleSub>
+          <TitleSub>Here's what you'll earn:</TitleSub>
           <Price>${formattedPrice}</Price>
           <Button disabled={loadingAccounts} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
             opacity: loadingAccounts ? "50%" : "100%"}}>
             { loadingAccounts && "⏳ (loading) " }
-            { !loadingAccounts && (wallet && connected ? "Buy" : "Connect Wallet" )}
+            { wallet && connected ? "Sell" : "Connect Wallet" }
           </Button>  
           <br />  
           <button onClick={onClose}>Close</button>
@@ -277,3 +275,4 @@ const ButtonError = styled.button`
   align-items: center;
 
 `*/
+

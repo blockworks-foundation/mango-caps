@@ -50,20 +50,18 @@ const IncrementButton = styled.button`
 
 export default function IncrementToken(props) {
 
-  const mangoMarketCapScalperCap = 5;
-
   function incrementAmount(inc) {
-    props.setAmount(Math.max(1, Math.min(mangoMarketCapScalperCap,props.amount + inc)));
+    props.setAmount(Math.max(props.min, Math.min(props.max,props.amount + inc)));
   }
 
   return (
     <SelectFrame>
-      <IncrementButton style={{color: 1 == props.amount ? 'transparent' : 'black'}} justify={'flex-start'} onClick={() => incrementAmount(-1)} >
+      <IncrementButton style={{color: props.min == props.amount ? 'transparent' : 'black'}} justify={'flex-start'} onClick={() => incrementAmount(-1)} >
         -
       </IncrementButton>
       <SelectMenu>{props.amount}</SelectMenu>
 
-      <IncrementButton style={{color: mangoMarketCapScalperCap == props.amount ? 'transparent' : 'black'}}
+      <IncrementButton style={{color: props.max == props.amount ? 'transparent' : 'black'}}
         justify={'flex-end'} onClick={() => incrementAmount(1)} >
         +
       </IncrementButton>

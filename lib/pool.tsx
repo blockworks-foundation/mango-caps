@@ -632,15 +632,14 @@ export const isLatest = (swap: AccountInfo<Buffer>) => {
   return swap.data.length === TokenSwapLayout.span;
 };
 
-export const swap = async (
+export async function swap(
   connection: Connection,
   wallet: any,
   components: LiquidityComponent[],
-  SLIPPAGE: number,
   programIds: ProgramIds,
   hostFeeAddress?: PublicKey,
   pool?: PoolInfo,
-) => {
+) {
   if (!pool || !components[0].account) {
     notify({
       type: "error",
@@ -653,7 +652,8 @@ export const swap = async (
   // Uniswap whitepaper: https://uniswap.org/whitepaper.pdf
   // see: https://uniswap.org/docs/v2/advanced-topics/pricing/
   // as well as native uniswap v2 oracle: https://uniswap.org/docs/v2/core-concepts/oracles/
-  const amountIn = components[0].amount * (1 + SLIPPAGE); // these two should include slippage
+  // these two should include slippage
+  const amountIn = components[0].amount;
   const minAmountOut = components[1].amount;
   const holdingA =
     pool.pubkeys.holdingMints[0]?.toBase58() ===
@@ -749,6 +749,13 @@ export const swap = async (
     )
   );
 
+  console.log({amountIn, minAmountOut, accounts:[
+    fromAccount.toString(),
+    holdingA.toString(),
+    holdingB.toString(),
+    toAccount.toString(),
+  ]})
+
   let tx = await sendTransaction(
     connection,
     wallet,
@@ -839,28 +846,34 @@ function findOrCreateAccountByMint(
 }
 
 function estimateProceedsFromInput(
-  inputQuantityInPool: number,
-  proceedsQuantityInPool: number,
-  inputAmount: number
-): number {
-  return (
-    (proceedsQuantityInPool * inputAmount) / (inputQuantityInPool + inputAmount)
-  );
+  proceedsQuantityInPool: BN,
+  inputQuantityInPool: BN,
+  inputAmount: BN
+): BN {
+  const result = proceedsQuantityInPool.mul(inputAmount).div(inputQuantityInPool.add(inputAmount));
+  const r2 = (proceedsQuantityInPool * inputAmount) / (inputQuantityInPool + inputAmount);
+
+
+  console.log(`ProceedsFromInput ${r2} ${result.toString()} ${inputAmount.toString()} ${proceedsQuantityInPool.toString()} ${inputQuantityInPool.toString()}`);
+
+  return result;
 }
 
 function estimateInputFromProceeds(
-  inputQuantityInPool: number,
-  proceedsQuantityInPool: number,
-  proceedsAmount: number
-): number | string {
-  if (proceedsAmount >= proceedsQuantityInPool) {
+  inputQuantityInPool: BN,
+  proceedsQuantityInPool: BN,
+  proceedsAmount: BN
+): BN | string {
+  if (proceedsAmount.gte(proceedsQuantityInPool)) {
     return "Not possible";
   }
+  const result = inputQuantityInPool.mul(proceedsAmount).div(
+    (proceedsQuantityInPool.sub(proceedsAmount)));
+  const r2 = (inputQuantityInPool * proceedsAmount) / (proceedsQuantityInPool - proceedsAmount);
 
-  return (
-    (inputQuantityInPool * proceedsAmount) /
-    (proceedsQuantityInPool - proceedsAmount)
-  );
+  console.log(`InputFromProceeds ${r2} ${result.toString()} ${proceedsAmount.toString()} ${inputQuantityInPool.toString()} ${proceedsQuantityInPool.toString()}`);
+
+  return result;
 }
 
 export enum PoolOperation {
@@ -881,13 +894,13 @@ export async function calculateDependentAmount(
     connection,
     pool.pubkeys.holdingAccounts[0]
   );
-  const amountA = accountA.info.amount.toNumber();
-
   const accountB = await cache.queryAccount(
     connection,
     pool.pubkeys.holdingAccounts[1]
   );
-  let amountB = accountB.info.amount.toNumber();
+
+  const amountA = accountA.info.amount;
+  let amountB = accountB.info.amount;
 
   if (!poolMint.mintAuthority) {
     throw new Error("Mint doesnt have authority");
@@ -901,7 +914,7 @@ export async function calculateDependentAmount(
   const offsetCurve = pool.raw?.data?.curve?.offset;
   if (offsetCurve) {
     offsetAmount = offsetCurve.token_b_offset;
-    amountB = amountB + offsetAmount;
+    amountB = amountB + BN(offsetAmount);
   }
 
   const mintA = await cache.queryMint(connection, accountA.info.mint);
@@ -912,30 +925,28 @@ export async function calculateDependentAmount(
   }
 
   const isFirstIndependent = accountA.info.mint.toBase58() === independent;
-  const depPrecision = Math.pow(
-    10,
-    isFirstIndependent ? mintB.decimals : mintA.decimals
-  );
-  const indPrecision = Math.pow(
-    10,
-    isFirstIndependent ? mintA.decimals : mintB.decimals
-  );
-  const indAdjustedAmount = amount * indPrecision;
+  const indDec = isFirstIndependent ? mintA.decimals : mintB.decimals;
+  const depDec = isFirstIndependent ? mintB.decimals : mintA.decimals;
 
-  let indBasketQuantity = isFirstIndependent ? amountA : amountB;
+  const indPrecision = new BN(10).pow(new BN(indDec));
+  const depPrecision = new BN(10).pow(new BN(depDec));
 
-  let depBasketQuantity = isFirstIndependent ? amountB : amountA;
+  let indBasketQuantity = new BN(isFirstIndependent ? amountA : amountB);
+  let depBasketQuantity = new BN(isFirstIndependent ? amountB : amountA);
+
+  const indAdjustedAmount = new BN(amount).mul(indPrecision);
+  console.log(`indAdjustedAmount: ${indAdjustedAmount} amount: ${amount} indPrecision: ${indPrecision} indBasketQuantity: ${indBasketQuantity}`);
 
   var depAdjustedAmount;
 
   const constantPrice = pool.raw?.data?.curve?.constantPrice;
   if (constantPrice) {
-    depAdjustedAmount = (amount * depPrecision) / constantPrice.token_b_price;
+    depAdjustedAmount = new BN(amount).mul(depPrecision).div(new BN(constantPrice.token_b_price));
   } else {
     switch (+op) {
       case PoolOperation.Add:
         depAdjustedAmount =
-          (depBasketQuantity / indBasketQuantity) * indAdjustedAmount;
+          (depBasketQuantity.div(indBasketQuantity)).mul(indAdjustedAmount);
         break;
       case PoolOperation.SwapGivenProceeds:
         depAdjustedAmount = estimateInputFromProceeds(
@@ -946,8 +957,8 @@ export async function calculateDependentAmount(
         break;
       case PoolOperation.SwapGivenInput:
         depAdjustedAmount = estimateProceedsFromInput(
-          indBasketQuantity,
           depBasketQuantity,
+          indBasketQuantity,
           indAdjustedAmount
         );
         break;
@@ -960,7 +971,13 @@ export async function calculateDependentAmount(
   if (depAdjustedAmount === undefined) {
     return undefined;
   }
-  return depAdjustedAmount / depPrecision;
+
+  const result = depAdjustedAmount.div(depPrecision).toNumber();
+  const r2 = depAdjustedAmount / depPrecision;
+
+  console.log(`estimate ${r2} ${result} ${depAdjustedAmount}/${depPrecision}`);
+
+  return r2;
 }
 
 // TODO: add ui to customize curve type
@@ -1378,6 +1395,23 @@ export const cache = {
 
     return query;
   },
+  refreshAccount: async (connection: Connection, pubKey: string | PublicKey) => {
+    let id: PublicKey;
+    if (typeof pubKey === "string") {
+      id = new PublicKey(pubKey);
+    } else {
+      id = pubKey;
+    }
+
+    const address = id.toBase58();
+    const query = getAccountInfo(connection, id).then((data) => {
+      accountsCache.set(address, data);
+      return data;
+    }) as Promise<TokenAccount>;
+
+    return query;
+
+  },
   addAccount: (pubKey: PublicKey, obj: AccountInfo<Buffer>) => {
     const account = tokenAccountFactory(pubKey, obj);
     accountsCache.set(account.pubkey.toBase58(), account);
@@ -1457,6 +1491,15 @@ export const getCachedAccount = (
     }
   }
 };
+
+export const getCachedAccountByMintAndOwner = (
+  mint: string,
+  owner: PublicKey,
+) => getCachedAccount(
+    (acc) =>
+      acc.info.mint.toBase58() === mint &&
+      acc.info.owner.toBase58() === owner.toBase58()
+  );
 
 const getAccountInfo = async (connection: Connection, pubKey: PublicKey) => {
   const info = await connection.getAccountInfo(pubKey);

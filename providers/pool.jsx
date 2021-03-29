@@ -38,7 +38,7 @@ export function PoolProvider({ children }) {
   useEffect(async () => {
     let response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId));
     let allPools = await Promise.all(response
-                    .filter(s => s.account.data.length === TokenSwapLayout.span)
+      .filter(s => s.account.data.length === TokenSwapLayout.span)
       .map(s => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId)));
     setPool(allPools.find(p =>
       p.pubkeys.holdingMints.map(m => m.toString()).toString() ===

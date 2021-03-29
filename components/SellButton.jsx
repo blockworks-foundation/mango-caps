@@ -1,5 +1,9 @@
-
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import SellModal from '../components/SellModal'
+import { SellPriceProvider } from '../providers/price'
+import { useAccounts } from '../providers/accounts'
+
 
 const Button = styled.button`
   background: #EFEDF9;
@@ -16,11 +20,22 @@ const Button = styled.button`
 `
 
 export default function SellButton() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { capAccount, usdAccount } = useAccounts();
+
+  const hasCap = capAccount && capAccount.info.amount.toNumber() > 0;
+
   return (
     <>
-    <Button>
+    <Button disabled={!hasCap} style={{
+      opacity: hasCap ? 1.0 : 0.5,
+      cursor: hasCap ? "pointer" : "default",
+    }} onClick={() => setIsOpen(true)}>
         <span>Sell</span>
-    </Button>
+      </Button>
+      <SellPriceProvider>
+        <SellModal open={isOpen} onClose={() => setIsOpen(false)} />
+      </SellPriceProvider>
     </>
   );
 }

@@ -5,7 +5,7 @@ import {
 
 import { useConnection } from './connection';
 import { useWallet } from './wallet';
-import { tokenAccountFactory } from '../lib/pool';
+import { cache, getCachedAccountByMintAndOwner } from '../lib/pool';
 
 const AccountsContext = React.createContext();
 
@@ -17,7 +17,8 @@ export function AccountsProvider({ children }) {
   const [capAccount, setCapAccount] = useState();
   const [usdAccount, setUsdAccount] = useState();
 
-  useEffect(async () => {
+  const refreshAccounts = async () => {
+    console.log('refreshing', {connected, connection, wallet});
     if (!connected || !connection || !wallet?.publicKey) {
       setCapAccount();
       setUsdAccount();
@@ -27,17 +28,22 @@ export function AccountsProvider({ children }) {
     const accounts = await connection.getTokenAccountsByOwner(
       wallet.publicKey,
       { programId: new PublicKey(config.tokenProgramId) });
-    const parsedAccounts = accounts.value.map(a => tokenAccountFactory(a.pubkey, a.account));
 
-    setCapAccount(parsedAccounts.find(a => a.info.mint.toString() === config.capMint));
-    setUsdAccount(parsedAccounts.find(a => a.info.mint.toString() === config.usdMint));
-  },[config, connection, connected, wallet]);
+    console.log({accounts});
+    accounts.value.forEach(a => cache.addAccount(a.pubkey, a.account));
+
+    setCapAccount(getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey));
+    setUsdAccount(getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey));
+  };
+
+  useEffect(refreshAccounts, [config, connection, connected, wallet]);
 
   return (
     <AccountsContext.Provider
       value={{
         capAccount,
-        usdAccount
+        usdAccount,
+        refreshAccounts
       }}
     >
       {children}

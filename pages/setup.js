@@ -49,8 +49,8 @@ export default function Setup() {
       addLiquidityNewPool(
         wallet,
         connection,
-        [ {mintAddress: config.capMint, account: capAccount, amount: 1000},
-          {mintAddress: config.usdMint, account: usdAccount, amount: 12000 * 1000000000}],
+        [ {mintAddress: config.capMint, account: capAccount, amount: config.capAmount},
+          {mintAddress: config.usdMint, account: usdAccount, amount: config.capAmount * 12.5 * 1000000000}],
         { curveType: CurveType.ConstantProduct,
           token_b_offset: 12000,
           tradeFeeNumerator: 25,
