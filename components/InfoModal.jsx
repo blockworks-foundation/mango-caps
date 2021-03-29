@@ -22,15 +22,21 @@ if (!open) return null
                 </div>
                 <br />
           <Text>
-          Here’s how it works: $MCAPS is a token that entitles you to 1 real 
+          Here’s how it works:
+          <br /> 
+          <br /> 
+          $MCAPS is a token that entitles you to 1 real 
           limited edition cap, shipped globally. You can sell the token back 
           at any time. To get a real pair, redeem a $MCAP token.
           </Text>
           <br />
           <Text>
-          How it’s priced: $MCAPS tokens are listed starting at $20 USD. E
+          How it’s priced: 
+          <br /> 
+          <br /> 
+          $MCAPS tokens are listed starting at $20 USD. E
           ach buy/sell will move the price. The increase or decrease follows a bonding 
-          curve. $MCAPS will eventually find and equillibrium based on market demand. 
+          curve. Enjoying $MCAPS will be a fleeting moment. Mangoes can only be left out for so after all.🥭 
           </Text>
           <br />
           <button onClick={onClose}>Close</button>
