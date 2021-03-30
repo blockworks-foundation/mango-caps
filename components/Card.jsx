@@ -29,9 +29,9 @@ export default function Card() {
         <MarketData>
           <span>
             <CurrentPrice>${formattedPrice} USD</CurrentPrice>
-            <SockCount>
+            <CapCount>
               {`${amountAvailable}/${totalSupply} available`}
-            </SockCount>
+            </CapCount>
           </span>
           <Info>
             <InfoButton>?</InfoButton>
@@ -78,7 +78,7 @@ const SubTitle = styled.p`
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 
-const SockCount = styled.p`
+const CapCount = styled.p`
   color: #605a77;
   font-weight: 400;
   margin: 0px;

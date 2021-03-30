@@ -20,6 +20,12 @@ const Button = styled.button`
   margin: 15px 0 15px 0;
   letter-spacing: 0.01em;
 
+  :hover {
+    transform: scale(1.04);
+    transition-duration: 0.5s;
+    box-shadow: 0px 5px 12px rgba(170, 131, 0, 0.46);
+  }
+
 `
 
 export default function BuyButton() {
