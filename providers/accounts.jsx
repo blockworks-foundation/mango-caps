@@ -95,7 +95,8 @@ export function AccountsProvider({ children }) {
         walletCapAccount,
         walletUsdAccount,
         getBalance,
-        balanceUpdated
+        balanceUpdated,
+        refreshWalletAccounts
       }}
     >
       {children}

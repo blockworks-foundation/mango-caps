@@ -23,7 +23,7 @@ export default function BuyModal({open, onClose}) {
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { walletCapAccount, walletUsdAccount } = useAccounts();
+  const { walletCapAccount, walletUsdAccount, refreshWalletAccounts } = useAccounts();
   const { pool } = usePool();
   const {
     amountToBuy,
@@ -58,6 +58,9 @@ export default function BuyModal({open, onClose}) {
       console.log('swap', {connection, wallet, components, slippage, programIds, undefined, pool});
 
       await swap(connection, wallet, components, programIds, undefined, pool);
+
+      // refresh wallet accounts in-case we just created a new cap account for this user
+      await refreshWalletAccounts();
     } catch (e) {
       console.error(e);
     } finally {
