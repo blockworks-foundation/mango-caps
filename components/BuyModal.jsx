@@ -206,7 +206,7 @@ const CapCount = styled.p`
 color: #605a77;
 font-weight: 400;
   margin: 0px;
-  font-size: 12px;
+  font-size: 13px;
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 const Increment = styled.div`
