@@ -8,15 +8,15 @@ import { PriceProvider } from '../providers/price'
 function MyApp({ Component, pageProps }) {
   return (
     <ConnectionProvider>
-      <WalletProvider>
-        <AccountsProvider>
-          <PoolProvider>
+      <PoolProvider>
+        <WalletProvider>
+          <AccountsProvider>
             <PriceProvider>
               <Component {...pageProps} />
             </PriceProvider>
-          </PoolProvider>
-        </AccountsProvider>
-      </WalletProvider>
+          </AccountsProvider>
+        </WalletProvider>
+      </PoolProvider>
     </ConnectionProvider>
   );
 }

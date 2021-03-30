@@ -11,28 +11,24 @@ export function PriceProvider({ children }) {
 
   const { connection, config } = useConnection();
   const { pool } = usePool();
+  const { getBalance, poolCapAccount, balanceUpdated } = useAccounts();
 
   const [amountToBuy, setAmountToBuy] = useState(1);
-  const totalSupply = config.capAmount;
-
   const [amountAvailable, setAmountAvailable] = useState(0);
-  const refreshAvailable = async () => {
-    console.log('refreshing', {connection, pool});
-    if (pool) {
-      const capAccount = await cache.refreshAccount(
-        connection,
-        pool.pubkeys.holdingAccounts[0]
-      );
-      const capAmount = capAccount.info.amount.toNumber();
-      setAmountAvailable(capAmount);
-    }
-  };
-  useEffect(refreshAvailable,[connection, pool]);
-
+  const totalSupply = config.capAmount;
   const [price, setPrice] = useState(0);
   const [formattedPrice, setFormattedPrice] = useState("");
+
   useEffect(async() => {
-    if (pool) {
+    if (poolCapAccount) {
+      console.log('Buy.amountAvailable', poolCapAccount.pubkey.toString());
+      setAmountAvailable(await getBalance(poolCapAccount));
+    }
+  },[poolCapAccount, balanceUpdated]);
+
+  useEffect(async() => {
+    if (connection && pool) {
+      console.log('Buy.price');
       const newPrice = await calculateDependentAmount(
         connection,
         config.capMint,
@@ -40,10 +36,9 @@ export function PriceProvider({ children }) {
         pool,
         PoolOperation.SwapGivenProceeds);
       setPrice(newPrice);
-      console.log({newPrice})
       setFormattedPrice(newPrice.toFixed(2));
     }
-  },[amountAvailable, amountToBuy, pool]);
+  },[amountToBuy, connection, pool, balanceUpdated]);
 
   return (
     <PriceContext.Provider
@@ -53,8 +48,7 @@ export function PriceProvider({ children }) {
         amountAvailable,
         totalSupply,
         price,
-        formattedPrice,
-        refreshAvailable
+        formattedPrice
       }}
     >
       {children}
@@ -66,33 +60,33 @@ export function usePrice() {
   return useContext(PriceContext);
 }
 
-
 export function SellPriceProvider({ children }) {
   const { connection, config } = useConnection();
   const { connected, wallet } = useWallet();
-  const { capAccount } = useAccounts();
+  const { walletCapAccount, getBalance, balanceUpdated } = useAccounts();
   const { pool } = usePool();
 
   const [amountToSell, setAmountToSell] = useState(1);
 
   const [amountAvailable, setAmountAvailable] = useState(0);
   useEffect(async() => {
-    console.log('refresh amountAvailable', {capAccount, key: capAccount?.pubkey?.toString(), amount: capAccount?.info?.amount?.toNumber()});
-    if (capAccount) {
-      const capAmount = capAccount.info.amount.toNumber();
-      setAmountAvailable(capAmount);
+    if (walletCapAccount) {
+      console.log('Sell.amountAvailable');
+      setAmountAvailable(await getBalance(walletCapAccount));
     }
-  },[capAccount]);
+  },[walletCapAccount, balanceUpdated]);
+
 
   const [price, setPrice] = useState(0);
   const [formattedPrice, setFormattedPrice] = useState("");
   useEffect(async() => {
-    if (pool) {
+    if (connection && pool) {
+      console.log('Sell.price');
       const newPrice = await calculateDependentAmount(connection, config.capMint, amountToSell, pool, PoolOperation.SwapGivenInput);
       setPrice(newPrice);
       setFormattedPrice(newPrice.toFixed(2));
     }
-  },[amountToSell, pool, capAccount, amountAvailable]);
+  },[amountToSell, connection, pool, balanceUpdated]);
 
   return (
     <PriceContext.Provider

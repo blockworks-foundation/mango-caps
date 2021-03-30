@@ -36,6 +36,9 @@ export function PoolProvider({ children }) {
   const [pool, setPool] = useState();
 
   useEffect(async () => {
+
+    if (!connection) return;
+
     let response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId));
     let allPools = await Promise.all(response
       .filter(s => s.account.data.length === TokenSwapLayout.span)
@@ -44,6 +47,10 @@ export function PoolProvider({ children }) {
       p.pubkeys.holdingMints.map(m => m.toString()).toString() ===
       [config.capMint, config.usdMint].toString()));
   }, [config, connection]);
+
+  useEffect(() => {
+
+  }, [connection, pool]);
 
   return (
     <PoolContext.Provider

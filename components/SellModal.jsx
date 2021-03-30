@@ -23,7 +23,7 @@ export default function SellModal({open, onClose}) {
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { capAccount, usdAccount, refreshAccounts } = useAccounts();
+  const { walletCapAccount, walletUsdAccount } = useAccounts();
   const { pool } = usePool();
   const {
     amountToSell,
@@ -43,25 +43,28 @@ export default function SellModal({open, onClose}) {
       return
     }
 
-    setSelling(true);
+    try {
+      setSelling(true);
+      // TODO set slippage back after fixing rounding issue
+      const slippage = 100;
+      const components = [
+        {mintAddress: config.capMint, account: walletCapAccount, amount: amountToSell},
+        {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 / slippage}]
+      const programIds = {
+        token: new PublicKey(config.tokenProgramId),
+        swap: new PublicKey(config.swapProgramId) };
 
-    const slippage = 100;
-    const components = [
-      {mintAddress: config.capMint, account: capAccount, amount: amountToSell},
-      {mintAddress: config.usdMint, account: usdAccount, amount: price * 1000000000 / slippage}]
-    const programIds = {
-      token: new PublicKey(config.tokenProgramId),
-      swap: new PublicKey(config.swapProgramId) };
+      console.log({connection, wallet, components, slippage, programIds, undefined, pool});
 
-    console.log({connection, wallet, components, slippage, programIds, undefined, pool});
-
-    await swap(connection, wallet, components, programIds, undefined, pool);
-    await refreshAccounts();
-
-    setSelling(false);
+      await swap(connection, wallet, components, programIds, undefined, pool);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSelling(false);
+    }
   };
 
-  const loadingAccounts = connected && !(usdAccount && capAccount && pool && !selling)
+  const loadingAccounts = connected && !(walletUsdAccount && walletCapAccount && pool && !selling)
 
   return (
     <>

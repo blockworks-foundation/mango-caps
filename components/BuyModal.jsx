@@ -23,7 +23,7 @@ export default function BuyModal({open, onClose}) {
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { capAccount, usdAccount } = useAccounts();
+  const { walletCapAccount, walletUsdAccount } = useAccounts();
   const { pool } = usePool();
   const {
     amountToBuy,
@@ -32,7 +32,6 @@ export default function BuyModal({open, onClose}) {
     totalSupply,
     price,
     formattedPrice,
-    refreshAvailable
   } = usePrice();
 
 
@@ -45,25 +44,28 @@ export default function BuyModal({open, onClose}) {
       return
     }
 
-    setBuying(true);
+    try {
+      setBuying(true);
 
-    const slippage = 1.05;
-    const components = [
-      {mintAddress: config.usdMint, account: usdAccount, amount: price * 1000000000 * slippage},
-      {mintAddress: config.capMint, account: capAccount, amount: amountToBuy}];
-    const programIds = {
-      token: new PublicKey(config.tokenProgramId),
-      swap: new PublicKey(config.swapProgramId) };
+      const slippage = 1.05;
+      const components = [
+        {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 * slippage},
+        {mintAddress: config.capMint, account: walletCapAccount, amount: amountToBuy}];
+      const programIds = {
+        token: new PublicKey(config.tokenProgramId),
+        swap: new PublicKey(config.swapProgramId) };
 
-    console.log({connection, wallet, components, slippage, programIds, undefined, pool});
+      console.log('swap', {connection, wallet, components, slippage, programIds, undefined, pool});
 
-    await swap(connection, wallet, components, programIds, undefined, pool);
-    await refreshAvailable();
-
-    setBuying(false);
+      await swap(connection, wallet, components, programIds, undefined, pool);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setBuying(false);
+    }
   };
 
-  const loadingAccounts = connected && !(usdAccount && pool && !buying)
+  const loadingAccounts = connected && !(walletUsdAccount && pool && !buying)
 
   return (
     <>
