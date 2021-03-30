@@ -13,7 +13,7 @@ if (!open) return null
           <Title><img
         height="24px"
         width="24px"
-        src="/mango.svg"
+        src="/mcap_logo_round.png"
         style={{
           display: 'inline-block',
           verticalAlign: 'middle',
@@ -22,21 +22,26 @@ if (!open) return null
                 </div>
                 <br />
           <Text>
-          Here’s how it works:
+            <b>Here’s how it works:</b>
           <br /> 
           <br /> 
           $MCAPS is a token that entitles you to 1 real 
           limited edition cap, shipped globally. You can sell the token back 
-          at any time. To get a real pair, redeem a $MCAP token.
+          at any time. To get a real pair, redeem a $MCAPS token.
           </Text>
           <br />
           <Text>
-          How it’s priced: 
+            <b>How it’s priced: </b>
           <br /> 
           <br /> 
-          $MCAPS tokens are listed starting at $20 USD. E
-          ach buy/sell will move the price. The increase or decrease follows a bonding 
-          curve. Enjoying $MCAPS will be a fleeting moment. Mangoes can only be left out for so after all.🥭 
+          $MCAPS tokens are listed starting at $15 USDT.
+          Each buy/sell will move the price.
+          The increase or decrease follows a &nbsp;
+          <a style={{textDecoration: 'underline'}} href="https://blog.relevant.community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a">
+            bonding curve
+          </a>.
+          Enjoying $MCAPS will be a fleeting moment.
+          Mangoes can only be left out for so after all.🥭 
           </Text>
           <br />
           <button onClick={onClose}>Close</button>
@@ -86,5 +91,6 @@ const Title = styled.p`
   line-height: 126.7%;
   width: 100%;
   margin: 0;
+  vertical-align: middle;
 `
 

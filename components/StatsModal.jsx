@@ -9,45 +9,40 @@ if (!open) return null
         <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
         <CardWrapper>
-        <Title>$MCAP Stats</Title>
+        <Title>$MCAPS Stats</Title>
         <br />
           <Description>
               <p>
                 <span>
-                  🧢
+                  🧢&thinsp;
                 </span>
-                Initial $MCAP
+                Initial $MCAPS
               </p>
               <p>500</p>
           </Description>
           <Description>
               <p>
                 <span>
-                  🔥
+                  🔥&thinsp;
                 </span>
-                Redeemed $MCAP
+                Redeemed $MCAPS
               </p>
               <p>500</p>
           </Description>
           <Description>
               <p>
                 <span>
-                  💦
+                  💦&thinsp;
                 </span>
-                $MCAP Pool
+                Remaining $MCAPS
               </p>
               <p>500</p>
           </Description>
           <Shim />
           <Text>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-          Read more.
-          </a>
+          The price of MCAPS changes when tokens are bought and sold.
           </Text>
+
           <br />
           <button onClick={onClose}>Close</button>
         </CardWrapper>

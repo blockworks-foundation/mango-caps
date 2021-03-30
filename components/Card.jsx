@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Tilt from 'react-tilt'
 
-import Gallery from './Gallery'
 import { usePrice } from '../providers/price'
+
+import Gallery from './Gallery'
+import StatsModal from './StatsModal'
 
 
 export default function Card() {
@@ -17,6 +19,8 @@ export default function Card() {
     formattedPrice
   } = usePrice();
 
+  const [showInfo, setShowInfo] = useState(false);
+
   return (
     <Tilt
       style={{ background: '#000', borderRadius: '20px' }}
@@ -28,16 +32,28 @@ export default function Card() {
         <Gallery />
         <MarketData>
           <span>
-            <CurrentPrice>${formattedPrice} USD</CurrentPrice>
+            <CurrentPrice>
+              ${formattedPrice}&thinsp;
+              <img
+                height="20px"
+                width="20px"
+                src="/tether_logo.svg"
+                style={{
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                  marginTop:"-6px",
+                }}/>
+            </CurrentPrice>
             <CapCount>
               {`${amountAvailable}/${totalSupply} available`}
             </CapCount>
           </span>
-          <Info>
+          <button onClick={() => setShowInfo(true)}>
             <InfoButton>?</InfoButton>
             <Dynamic>Dynamic Pricing Stats</Dynamic>
-          </Info>
+          </button>
         </MarketData>
+        <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
       </CardWrapper>
     </Tilt>
   )
@@ -92,10 +108,6 @@ const CurrentPrice = styled.p`
   margin: 0px;
   margin-bottom: 0.2rem;
   font-feature-settings: 'tnum' on, 'onum' on;
-`
-
-const Info = styled.div`
-  /* margin-bottom: -2px; */
 `
 
 const Dynamic = styled.p`

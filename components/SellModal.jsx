@@ -70,22 +70,26 @@ export default function SellModal({open, onClose}) {
     <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
         <CardWrapper>
-        <div className="TitleCard">
-          <Title><img
-        height="24px"
-        width="24px"
-        src="/mango.svg"
-        style={{
-          display: 'inline-block',
-          verticalAlign: 'middle',
-        }}
-      /> Sell $MCAP</Title>
-                </div>
+          <Title>Sell Mango Market Caps</Title>
           <Gallery />
           <FullWidth>
           <MarketData>
-          <span>
-            <CurrentPrice>${formattedPrice} USD</CurrentPrice>
+            <span>
+                            { /*
+              <CurrentPrice>
+                ${formattedPrice} USDT &thinsp;
+                <img
+                  height="17px"
+                  width="17px"
+                  src="/tether_logo.svg"
+                  style={{
+                    display: 'inline-block',
+                    verticalAlign: 'middle',
+                    marginTop:"-6px",
+                  }}/>
+              </CurrentPrice>
+              */}
+
             <CapCount>
               {`You own ${amountAvailable}`}
             </CapCount>

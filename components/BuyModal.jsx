@@ -72,66 +72,63 @@ export default function BuyModal({open, onClose}) {
 
   return (
     <>
-        <OVERLAY_STYLES> </OVERLAY_STYLES>
-        <CardWrapper>
-        <div className="TitleCard">
-          <Title><img
-        height="24px"
-        width="24px"
-        src="/mango.svg"
-        style={{
-          display: 'inline-block',
-          verticalAlign: 'middle',
-        }}
-      /> Buy $MCAP</Title>
-                </div>
+    <OVERLAY_STYLES> </OVERLAY_STYLES>
+ >
+      <CardWrapper>
+        <FullWidth>
+          <Title>Mango Market Caps Edition 0</Title>
+          <SubTitle>$MCAPS</SubTitle>
           <Gallery />
-          <FullWidth>
           <MarketData>
-          <span>
-            <CurrentPrice>${formattedPrice} USDT <img
-        height="17px"
-        width="17px"
-        src="/tether_logo.svg"
-        style={{
-          display: 'inline-block',
-          verticalAlign: 'middle',
-          marginTop:"-6px",
-        }}
-      /></CurrentPrice>
-            <CapCount>
-              {`${amountAvailable}/${totalSupply} available`}
-            </CapCount>
-          </span>
-          <Increment>
-             <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={1} max={5} />
-          </Increment>
-        </MarketData>
-          </FullWidth>
-        </CardWrapper>
-        <InfoCard>
-          <TitleSub>Here's what you owe:</TitleSub>
-          <Price>${formattedPrice} <img
-        height="30px"
-        width="30px"
-        src="/tether_logo.svg"
-        style={{
-          display: 'inline-block',
-          verticalAlign: 'middle',
-          marginTop:"-9px",
-        }}
-      /></Price>
-          <Button disabled={loadingAccounts} onClick={handleClick} style={{
-            background: connected ? bgConnected : bgDisconnected,
-            opacity: loadingAccounts ? "50%" : "100%"}}>
-            { loadingAccounts && "⏳ (loading) " }
-            { !loadingAccounts && (wallet && connected ? "Buy" : "Connect Wallet" )}
-          </Button>  
-          <br />  
-          <button onClick={onClose}>Close</button>
-        </InfoCard>
-        </>
-  )
+            <span>
+              { /*
+              <CurrentPrice>
+                ${formattedPrice} USDT &thinsp;
+                <img
+                  height="17px"
+                  width="17px"
+                  src="/tether_logo.svg"
+                  style={{
+                    display: 'inline-block',
+                    verticalAlign: 'middle',
+                    marginTop:"-6px",
+                  }}/>
+              </CurrentPrice>
+              */}
+      
+              <CapCount>
+                {`${amountAvailable}/${totalSupply} available`}
+              </CapCount>
+            </span>
+            <Increment>
+               <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={1} max={5} />
+            </Increment>
+          </MarketData>
+        </FullWidth>
+      </CardWrapper>
+      <InfoCard>
+        <TitleSub>Here's what you owe:</TitleSub>
+        <Price>${formattedPrice} <img
+      height="30px"
+      width="30px"
+      src="/tether_logo.svg"
+      style={{
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        marginTop:"-9px",
+      }}
+    /></Price>
+        <Button disabled={loadingAccounts} onClick={handleClick} style={{
+          background: connected ? bgConnected : bgDisconnected,
+          opacity: loadingAccounts ? "50%" : "100%"}}>
+          { loadingAccounts && "⏳ (loading) " }
+          { !loadingAccounts && (wallet && connected ? "Buy" : "Connect Wallet" )}
+        </Button>  
+        <br />  
+        <button onClick={onClose}>Close</button>
+      </InfoCard>
+      </>
+)
 }
 
 const OVERLAY_STYLES = styled.div`
@@ -168,6 +165,8 @@ const CardWrapper = styled.div`
   padding: 24px;
   z-index: 1000;
 `
+
+
 const InfoCard = styled.div`
   position: fixed;
   width: 370px;
@@ -193,13 +192,16 @@ const MarketData = styled.div`
   width: 100%;
   margin-top: 1rem;
 `
+
 const CurrentPrice = styled.p`
   font-weight: 600;
-  font-size: 18px;
+  font-size: 24px;
   margin: 0px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
   font-feature-settings: 'tnum' on, 'onum' on;
 `
+
+
 const CapCount = styled.p`
 color: #605a77;
 font-weight: 400;
@@ -212,12 +214,25 @@ const Increment = styled.div`
 `
 
 const Title = styled.p`
-  font-weight: 500;
+  font-weight: 800;
   font-size: 24px;
   line-height: 126.7%;
   width: 100%;
   margin: 0;
 `
+
+
+const SubTitle = styled.p`
+  color: #524646;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 156.7%;
+  width: 100%;
+  margin: 0;
+  font-feature-settings: 'tnum' on, 'onum' on;
+`
+
+
 const TitleSub = styled.p`
   font-weight: 800;
   font-size: 18px;
@@ -227,7 +242,7 @@ const TitleSub = styled.p`
   color: #696969;
   padding-left: 10px;
   text-align: center;
-  margin-top: 80px;
+  margin-top: 95px;
 
 `
 const Price = styled.p`

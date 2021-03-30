@@ -4,7 +4,7 @@ export default function Logo() {
       <img
         height="40px"
         width="40px"
-        src="/mango.svg"
+        src="/mcap_logo_round.png"
         style={{
           display: 'inline-block',
           verticalAlign: 'middle',

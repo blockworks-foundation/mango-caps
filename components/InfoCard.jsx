@@ -6,7 +6,19 @@ export default function InfoCard() {
 const [isOpen, setIsOpen] = useState(false)
   return (
       <CardWrapper>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed. <span onClick={() => setIsOpen(true)}>do eiusmod</span></Text>
+        <Text>
+          Buy and sell real mango market caps.
+          Choose between fresh mango orange and stylish black
+          on redemption. Worldwide free shipping.&ensp;
+          <a
+          onClick={() => setIsOpen(true)}
+          style={{
+            color: '#909090',
+            fontWeight: 500,
+          }}>
+            Learn More
+          </a>
+        </Text>
         <InfoModal open={isOpen} onClose={() => setIsOpen(false)} />
       </CardWrapper>
 
@@ -30,7 +42,7 @@ const CardWrapper = styled.div`
 
 const Text = styled.p`
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   width: 100%;
   margin: 0;
 `
