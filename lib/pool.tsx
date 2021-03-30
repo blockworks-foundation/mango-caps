@@ -18,7 +18,7 @@ import { Numberu64, TokenSwap } from "@solana/spl-token-swap";
 import * as BufferLayout from "buffer-layout";
 import { sendTransaction } from "./transaction";
 import assert from 'assert';
-import * as BN from 'bn.js';
+import BN from 'bn.js';
 
 
 const notify = console.log;
@@ -87,8 +87,8 @@ export interface PoolConfig {
     hostFeeDenominator: number;
   };
 
-  token_b_offset?: number;
-  token_b_price?: number;
+  token_b_offset?: number | Numberu64;
+  token_b_price?: number | Numberu64;
 }
 
 /**
@@ -159,13 +159,13 @@ const CURVE_NODE = BufferLayout.union(
 CURVE_NODE.addVariant(0, BufferLayout.struct([]), "constantProduct");
 CURVE_NODE.addVariant(
   1,
-  BufferLayout.struct([BufferLayout.nu64("token_b_price")]),
+  BufferLayout.struct([uint64("token_b_price")]),
   "constantPrice"
 );
 CURVE_NODE.addVariant(2, BufferLayout.struct([]), "stable");
 CURVE_NODE.addVariant(
   3,
-  BufferLayout.struct([BufferLayout.nu64("token_b_offset")]),
+  BufferLayout.struct([uint64("token_b_offset")]),
   "offset"
 );
 
@@ -228,10 +228,10 @@ export const createInitSwapInstruction = (
     ];
 
     if (config.curveType === CurveType.ConstantProductWithOffset) {
-      fields.push(BufferLayout.nu64("token_b_offset"));
+      fields.push(uint64("token_b_offset"));
       fields.push(BufferLayout.blob(24, "padding"));
     } else if (config.curveType === CurveType.ConstantPrice) {
-      fields.push(BufferLayout.nu64("token_b_price"));
+      fields.push(uint64("token_b_price"));
       fields.push(BufferLayout.blob(24, "padding"));
     } else {
       fields.push(BufferLayout.blob(32, "padding"));
@@ -241,7 +241,7 @@ export const createInitSwapInstruction = (
 
     const { fees, ...rest } = config;
 
-    const encodeLength = commandDataLayout.encode(
+    let encodeLength = commandDataLayout.encode(
       {
         instruction: 0, // InitializeSwap instruction
         nonce,
@@ -250,6 +250,7 @@ export const createInitSwapInstruction = (
       },
       data
     );
+    console.log('initSwap', {fees, rest});
     data = data.slice(0, encodeLength);
   } else {
     const commandDataLayout = BufferLayout.struct([
@@ -851,10 +852,9 @@ function estimateProceedsFromInput(
   inputAmount: BN
 ): BN {
   const result = proceedsQuantityInPool.mul(inputAmount).div(inputQuantityInPool.add(inputAmount));
-  const r2 = (proceedsQuantityInPool * inputAmount) / (inputQuantityInPool + inputAmount);
 
-
-  console.log(`ProceedsFromInput ${r2} ${result.toString()} ${inputAmount.toString()} ${proceedsQuantityInPool.toString()} ${inputQuantityInPool.toString()}`);
+  //const r2 = (proceedsQuantityInPool * inputAmount) / (inputQuantityInPool + inputAmount);
+  //console.log(`ProceedsFromInput ${r2} ${result.toString()} ${inputAmount.toString()} ${proceedsQuantityInPool.toString()} ${inputQuantityInPool.toString()}`);
 
   return result;
 }
@@ -869,9 +869,9 @@ function estimateInputFromProceeds(
   }
   const result = inputQuantityInPool.mul(proceedsAmount).div(
     (proceedsQuantityInPool.sub(proceedsAmount)));
-  const r2 = (inputQuantityInPool * proceedsAmount) / (proceedsQuantityInPool - proceedsAmount);
 
-  console.log(`InputFromProceeds ${r2} ${result.toString()} ${proceedsAmount.toString()} ${inputQuantityInPool.toString()} ${proceedsQuantityInPool.toString()}`);
+  //const r2 = (inputQuantityInPool * proceedsAmount) / (proceedsQuantityInPool - proceedsAmount);
+  //console.log(`InputFromProceeds ${r2} ${result.toString()} ${proceedsAmount.toString()} ${inputQuantityInPool.toString()} ${proceedsQuantityInPool.toString()}`);
 
   return result;
 }
@@ -899,8 +899,8 @@ export async function calculateDependentAmount(
     pool.pubkeys.holdingAccounts[1]
   );
 
-  const amountA = accountA.info.amount;
-  let amountB = accountB.info.amount;
+  const amountA = new BN(accountA.info.amount);
+  let amountB = new BN(accountB.info.amount);
 
   if (!poolMint.mintAuthority) {
     throw new Error("Mint doesnt have authority");
@@ -910,11 +910,9 @@ export async function calculateDependentAmount(
     return;
   }
 
-  let offsetAmount = 0;
   const offsetCurve = pool.raw?.data?.curve?.offset;
   if (offsetCurve) {
-    offsetAmount = offsetCurve.token_b_offset;
-    amountB = amountB + BN(offsetAmount);
+    amountB += offsetCurve.token_b_offset;
   }
 
   const mintA = await cache.queryMint(connection, accountA.info.mint);
@@ -931,12 +929,10 @@ export async function calculateDependentAmount(
   const indPrecision = new BN(10).pow(new BN(indDec));
   const depPrecision = new BN(10).pow(new BN(depDec));
 
-  let indBasketQuantity = new BN(isFirstIndependent ? amountA : amountB);
-  let depBasketQuantity = new BN(isFirstIndependent ? amountB : amountA);
+  let indBasketQuantity = isFirstIndependent ? amountA : amountB;
+  let depBasketQuantity = isFirstIndependent ? amountB : amountA;
 
   const indAdjustedAmount = new BN(amount).mul(indPrecision);
-  console.log(`indAdjustedAmount: ${indAdjustedAmount} amount: ${amount} indPrecision: ${indPrecision} indBasketQuantity: ${indBasketQuantity}`);
-
   var depAdjustedAmount;
 
   const constantPrice = pool.raw?.data?.curve?.constantPrice;
@@ -972,12 +968,11 @@ export async function calculateDependentAmount(
     return undefined;
   }
 
-  const result = depAdjustedAmount.div(depPrecision).toNumber();
-  const r2 = depAdjustedAmount / depPrecision;
+  const result = depAdjustedAmount.div(depPrecision).toNumber() +
+                 depAdjustedAmount.mod(depPrecision).toNumber() / depPrecision.toNumber();
 
-  console.log(`estimate ${r2} ${result} ${depAdjustedAmount}/${depPrecision}`);
-
-  return r2;
+  console.log(`estimate ${result} ${depAdjustedAmount}/${depPrecision}`);
+  return result;
 }
 
 // TODO: add ui to customize curve type
