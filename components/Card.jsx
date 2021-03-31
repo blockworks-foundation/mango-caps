@@ -22,6 +22,7 @@ export default function Card() {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
+    <>
     <Tilt
       style={{ background: '#000', borderRadius: '20px' }}
       options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
@@ -53,9 +54,10 @@ export default function Card() {
             <Dynamic>Dynamic Pricing Stats</Dynamic>
           </button>
         </MarketData>
-        <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
       </CardWrapper>
     </Tilt>
+    <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
+    </>
   )
 }
 
