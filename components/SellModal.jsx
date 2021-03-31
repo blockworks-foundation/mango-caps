@@ -46,7 +46,7 @@ export default function SellModal({open, onClose}) {
     try {
       setSelling(true);
       // TODO set slippage back after fixing rounding issue
-      const slippage = 100;
+      const slippage = 1.05;
       const components = [
         {mintAddress: config.capMint, account: walletCapAccount, amount: amountToSell},
         {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 / slippage}]

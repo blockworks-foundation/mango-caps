@@ -1,5 +1,6 @@
 import { TokenSwap } from '@solana/spl-token-swap'
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey } from '@solana/web3.js'
+import { u64 } from '@solana/spl-token'
 
 import styled from 'styled-components'
 
@@ -42,9 +43,8 @@ export default function Setup() {
   const { connected, wallet } = useWallet();
   const { walletCapAccount, walletUsdAccount } = useAccounts();
 
-  console.log( { connection, config, connected, wallet, capAccount, usdAccount } );
   function createSwap() {
-    console.log( { connection, config, connected, wallet, capAccount, usdAccount } );
+    console.log( { connection, config, connected, wallet, walletCapAccount, walletUsdAccount } );
     if (connected) {
       addLiquidityNewPool(
         wallet,
@@ -56,13 +56,13 @@ export default function Setup() {
         }, {
           mintAddress: config.usdMint,
           account: walletUsdAccount,
-          amount: config.capAmount * 15 * Math.pow(10, config.usdDecimals),
+          amount: 0,
         }],
-        { curveType: CurveType.ConstantProduct,
-          token_b_offset: 15000,
+        { curveType: CurveType.ConstantProductWithOffset,
+          token_b_offset: new u64(config.capAmount * 15 * Math.pow(10, config.usdDecimals)).toBuffer(),
           tradeFeeNumerator: 25,
           tradeFeeDenominator: 10000,
-          ownerTradeFeeNumerator: 5,
+          ownerTradeFeeNumerator: 25,
           ownerTradeFeeDenominator: 10000,
           ownerWithdrawFeeNumerator: 0,
           ownerWithdrawFeeDenominator: 0,
