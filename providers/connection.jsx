@@ -15,6 +15,7 @@ export const CFG = {
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     capMint: '',
     usdMint: '',
+    usdDecimals: 6,
     capAmount: 0,
   },
   'devnet': {
@@ -23,6 +24,7 @@ export const CFG = {
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
     capMint: 'ApXpz6g1SX8RxN2MWxKQg24o91XLZ3HcySj6sxgfMymK',
     usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
+    usdDecimals: 9,
     capAmount: 1000,
   },
 };

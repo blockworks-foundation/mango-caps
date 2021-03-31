@@ -34,7 +34,7 @@ if (!open) return null
             <b>How it’s priced: </b>
           <br /> 
           <br /> 
-          $MCAPS tokens are listed starting at $15 USDT.
+          $MCAPS tokens are listed starting at $15 USDC.
           Each buy/sell will move the price.
           The increase or decrease follows a &nbsp;
           <a style={{textDecoration: 'underline'}} href="https://blog.relevant.community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a">
@@ -71,7 +71,7 @@ const CardWrapper = styled.div`
 
 const Text = styled.p`
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   width: 100%;
   margin: 0;
 `

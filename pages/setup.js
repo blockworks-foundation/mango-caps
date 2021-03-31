@@ -40,7 +40,7 @@ export default function Setup() {
   const { connection, config } = useConnection();
   const { pool } = usePool();
   const { connected, wallet } = useWallet();
-  const { capAccount, usdAccount } = useAccounts();
+  const { walletCapAccount, walletUsdAccount } = useAccounts();
 
   console.log( { connection, config, connected, wallet, capAccount, usdAccount } );
   function createSwap() {
@@ -49,10 +49,17 @@ export default function Setup() {
       addLiquidityNewPool(
         wallet,
         connection,
-        [ {mintAddress: config.capMint, account: capAccount, amount: config.capAmount},
-          {mintAddress: config.usdMint, account: usdAccount, amount: config.capAmount * 12.5 * 1000000000}],
+        [{
+          mintAddress: config.capMint,
+          account: walletCapAccount,
+          amount: config.capAmount,
+        }, {
+          mintAddress: config.usdMint,
+          account: walletUsdAccount,
+          amount: config.capAmount * 15 * Math.pow(10, config.usdDecimals),
+        }],
         { curveType: CurveType.ConstantProduct,
-          token_b_offset: 12000,
+          token_b_offset: 15000,
           tradeFeeNumerator: 25,
           tradeFeeDenominator: 10000,
           ownerTradeFeeNumerator: 5,
@@ -77,8 +84,8 @@ export default function Setup() {
         <div>
           <Label>2.</Label>
           USD / CAP
-          <pre>{usdAccount?.pubkey?.toString()}</pre>
-          <pre>{capAccount?.pubkey?.toString()}</pre>
+          <pre>{walletUsdAccount?.pubkey?.toString()}</pre>
+          <pre>{walletCapAccount?.pubkey?.toString()}</pre>
         </div>
         <div>
           <Label>3.</Label>
