@@ -11,11 +11,11 @@ export function PriceProvider({ children }) {
 
   const { connection, config } = useConnection();
   const { pool } = usePool();
-  const { getBalance, poolCapAccount, balanceUpdated } = useAccounts();
+  const { getBalance, poolCapAccount, balanceUpdated, mintCapAccount } = useAccounts();
 
   const [amountToBuy, setAmountToBuy] = useState(1);
   const [amountAvailable, setAmountAvailable] = useState(0);
-  const totalSupply = config.capAmount;
+  const totalSupply = mintCapAccount?.supply.toNumber();
   const [price, setPrice] = useState(0);
   const [formattedPrice, setFormattedPrice] = useState("");
 
