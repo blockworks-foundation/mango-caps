@@ -73,7 +73,6 @@ export default function BuyModal({open, onClose}) {
   return (
     <>
     <OVERLAY_STYLES> </OVERLAY_STYLES>
- >
       <CardWrapper>
         <FullWidth>
           <Title>Mango Market Caps Edition 0</Title>
@@ -203,8 +202,8 @@ const CurrentPrice = styled.p`
 
 
 const CapCount = styled.p`
-color: #605a77;
-font-weight: 400;
+  color: #605a77;
+  font-weight: 400;
   margin: 0px;
   font-size: 13px;
   font-feature-settings: 'tnum' on, 'onum' on;
