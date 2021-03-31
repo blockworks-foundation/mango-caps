@@ -1,8 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import { useAccounts } from '../providers/accounts'
+import { useConnection } from '../providers/connection'
+
 export default function StatsModal({open, onClose}) {
-if (!open) return null
+
+  const { config } = useConnection();
+  const { poolCapAccount, getBalance, balanceUpdated } = useAccounts();
+  const [amountAvailable, setAmountAvailable] = useState(0);
+
+  useEffect(async() => {
+    if (poolCapAccount) {
+      console.log('Stats.amountAvailable');
+      setAmountAvailable(await getBalance(poolCapAccount));
+    }
+  },[poolCapAccount, balanceUpdated]);
+
+
+  if (!open) return null
 
   return (
 
@@ -18,7 +34,7 @@ if (!open) return null
                 </span>
                 Initial $MCAPS
               </p>
-              <p>500</p>
+              <p>{config.capAmount}</p>
           </Description>
           <Description>
               <p>
@@ -36,7 +52,7 @@ if (!open) return null
                 </span>
                 Remaining $MCAPS
               </p>
-              <p>500</p>
+              <p>{amountAvailable}</p>
           </Description>
           <Shim />
           <Text>
