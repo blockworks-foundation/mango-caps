@@ -14,10 +14,9 @@ import {
   AccountLayout,
   AccountInfo as TokenAccountInfo
 } from "@solana/spl-token";
-import { Numberu64, TokenSwap } from "@solana/spl-token-swap";
+import { Numberu64 } from "@solana/spl-token-swap";
 import * as BufferLayout from "buffer-layout";
 import { sendTransaction } from "./transaction";
-import assert from 'assert';
 import BN from 'bn.js';
 import {sha256} from 'crypto-hash';
 
@@ -1710,4 +1709,8 @@ const deserializeMint = (data: Buffer) => {
 
   return mintInfo as MintInfo;
 };
+
+function useConnection() {
+  throw new Error("Function not implemented.");
+}
 

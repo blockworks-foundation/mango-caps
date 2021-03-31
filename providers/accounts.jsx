@@ -19,6 +19,7 @@ export function AccountsProvider({ children }) {
   const [poolCapAccount, setPoolCapAccount] = useState();
   const [poolUsdAccount, setPoolUsdAccount] = useState();
   const [walletCapAccount, setWalletCapAccount] = useState();
+  const mintCapAccount = useMint(config.capMint);
   const [walletUsdAccount, setWalletUsdAccount] = useState();
   const [balanceUpdated, setBalanceUpdated] = useState(0);
 
@@ -94,6 +95,7 @@ export function AccountsProvider({ children }) {
         poolUsdAccount,
         walletCapAccount,
         walletUsdAccount,
+        mintCapAccount,
         getBalance,
         balanceUpdated,
         refreshWalletAccounts
@@ -102,6 +104,41 @@ export function AccountsProvider({ children }) {
       {children}
     </AccountsContext.Provider>
   );
+};
+
+export function useMint(key) {
+  const { connection } = useConnection();
+  const [mint, setMint] = useState();
+
+  const id = typeof key === "string" ? key : key?.toBase58();
+  const pubkey = new PublicKey(id);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    cache
+      .queryMint(connection, id)
+      .then(setMint)
+      .catch((err) =>
+        notify({
+          message: err.message,
+          type: "error",
+        })
+      );
+
+    const dispose = connection.onAccountChange(pubkey, (account) => {
+      if (account) {
+        cache.addMint(pubkey, account);
+      }
+    });
+    return () => {
+      dispose();
+    };
+  }, [connection, id]);
+
+  return mint;
 };
 
 export function useAccounts() {
