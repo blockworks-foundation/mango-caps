@@ -58,6 +58,7 @@ export interface PoolInfo {
     pubkey: PublicKey;
     data: any;
     account: AccountInfo<Buffer>;
+    curve: any;
   };
 }
 
