@@ -11,20 +11,14 @@ export function PriceProvider({ children }) {
 
   const { connection, config } = useConnection();
   const { pool } = usePool();
-  const { getBalance, poolCapAccount, balanceUpdated } = useAccounts();
+  const { poolCapAccount, poolCapBalance } = useAccounts();
 
+  const amountAvailable = poolCapBalance;
   const [amountToBuy, setAmountToBuy] = useState(1);
-  const [amountAvailable, setAmountAvailable] = useState(0);
   const totalSupply = config.capAmount;
   const [price, setPrice] = useState(0);
   const [formattedPrice, setFormattedPrice] = useState("");
 
-  useEffect(async() => {
-    if (poolCapAccount) {
-      console.log('Buy.amountAvailable', poolCapAccount.pubkey.toString());
-      setAmountAvailable(await getBalance(poolCapAccount));
-    }
-  },[poolCapAccount, balanceUpdated]);
 
   useEffect(async() => {
     if (connection && pool) {
@@ -38,7 +32,7 @@ export function PriceProvider({ children }) {
       setPrice(newPrice);
       setFormattedPrice(newPrice.toFixed(2));
     }
-  },[amountToBuy, connection, pool, balanceUpdated]);
+  }, [amountToBuy, connection, pool, poolCapBalance]);
 
   return (
     <PriceContext.Provider
@@ -63,22 +57,14 @@ export function usePrice() {
 export function SellPriceProvider({ children }) {
   const { connection, config } = useConnection();
   const { connected, wallet } = useWallet();
-  const { walletCapAccount, getBalance, balanceUpdated } = useAccounts();
+  const { walletCapAccount, walletCapBalance } = useAccounts();
   const { pool } = usePool();
 
+  const amountAvailable = walletCapBalance;
   const [amountToSell, setAmountToSell] = useState(1);
-
-  const [amountAvailable, setAmountAvailable] = useState(0);
-  useEffect(async() => {
-    if (walletCapAccount) {
-      console.log('Sell.amountAvailable');
-      setAmountAvailable(await getBalance(walletCapAccount));
-    }
-  },[walletCapAccount, balanceUpdated]);
-
-
   const [price, setPrice] = useState(0);
   const [formattedPrice, setFormattedPrice] = useState("");
+
   useEffect(async() => {
     if (connection && pool) {
       console.log('Sell.price');
@@ -86,7 +72,7 @@ export function SellPriceProvider({ children }) {
       setPrice(newPrice);
       setFormattedPrice(newPrice.toFixed(2));
     }
-  },[amountToSell, connection, pool, balanceUpdated]);
+  },[amountToSell, connection, pool, walletCapBalance]);
 
   return (
     <PriceContext.Provider

@@ -92,7 +92,7 @@ export default function SellModal({open, onClose}) {
               */}
 
             <CapCount>
-              {`You own ${amountAvailable}`}
+                {`You own ${amountAvailable}`}
             </CapCount>
           </span>
           <Increment>
@@ -103,7 +103,7 @@ export default function SellModal({open, onClose}) {
         </CardWrapper>
         <InfoCard>
           <TitleSub>Here's what you'll receive:</TitleSub>
-          <Price>${formattedPrice}<img
+          <Price>${formattedPrice}&thinsp;<img
       height="30px"
       width="30px"
       src="/tether_logo.svg"
@@ -116,8 +116,8 @@ export default function SellModal({open, onClose}) {
           <Button disabled={loadingAccounts} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
             opacity: loadingAccounts ? "50%" : "100%"}}>
-            { loadingAccounts && "⏳ (loading) " }
-            { wallet && connected ? "Sell" : "Connect Wallet" }
+            { loadingAccounts && "⏳ (confirm in wallet) " }
+            { !loadingAccounts && (wallet && connected ? "Sell" : "Connect Wallet" ) }
           </Button>  
           <br />  
           <button onClick={onClose}>Close</button>
@@ -194,9 +194,9 @@ const CurrentPrice = styled.p`
 `
 const CapCount = styled.p`
   color: #605a77;
-  font-weight: 600;
+  font-weight: 400;
   margin: 0px;
-  font-size: 18px;
+  font-size: 13px;
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 const Increment = styled.div`

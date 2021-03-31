@@ -7,16 +7,7 @@ import { useConnection } from '../providers/connection'
 export default function StatsModal({open, onClose}) {
 
   const { config } = useConnection();
-  const { poolCapAccount, getBalance, balanceUpdated } = useAccounts();
-  const [amountAvailable, setAmountAvailable] = useState(0);
-
-  useEffect(async() => {
-    if (poolCapAccount) {
-      console.log('Stats.amountAvailable');
-      setAmountAvailable(await getBalance(poolCapAccount));
-    }
-  },[poolCapAccount, balanceUpdated]);
-
+  const { poolCapAccount, poolCapBalance } = useAccounts();
 
   if (!open) return null
 
@@ -52,7 +43,7 @@ export default function StatsModal({open, onClose}) {
                 </span>
                 Remaining $MCAPS
               </p>
-              <p>{amountAvailable}</p>
+              <p>{poolCapBalance}</p>
           </Description>
           <Shim />
           <Text>
