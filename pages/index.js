@@ -6,6 +6,7 @@ import WalletButton from  '../components/WalletButton'
 import BuyButton from  '../components/BuyButton'
 import SellButton from  '../components/SellButton'
 import Redeem from  '../components/Redeem'
+import CapCount from  '../components/CapCount'
 
 
 import Card from '../components/Card'
@@ -53,6 +54,9 @@ export default function Home() {
           <Logo />
         </div>
         <div className="flex-grow" />
+        <div className="flex-initial">
+          <CapCount />
+        </div>
         <div className="flex-initial">
           <StatsButton />
         </div>
