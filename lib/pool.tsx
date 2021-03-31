@@ -19,6 +19,7 @@ import * as BufferLayout from "buffer-layout";
 import { sendTransaction } from "./transaction";
 import assert from 'assert';
 import BN from 'bn.js';
+import {sha256} from 'crypto-hash';
 
 
 const notify = console.log;
@@ -632,6 +633,61 @@ export const isLatest = (swap: AccountInfo<Buffer>) => {
   return true;
   return swap.data.length === TokenSwapLayout.span;
 };
+
+const MEMO_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+
+export async function redeem(
+  connection: Connection,
+  wallet: any,
+  account: TokenAccount, 
+  amount: number, 
+  address: string,
+  programIds: ProgramIds) {
+  const instructions: TransactionInstruction[] = [];
+  const cleanupInstructions: TransactionInstruction[] = [];
+  const signers: Account[] = [];
+
+  const transferAuthority = approveAmount(
+    instructions, 
+    cleanupInstructions, 
+    account.pubkey, 
+    wallet.publicKey, 
+    amount, 
+    programIds
+  );
+
+  signers.push(transferAuthority);
+
+  instructions.push(Token.createBurnInstruction(
+    programIds.token,
+    account.info.mint, 
+    account.pubkey, 
+    transferAuthority.publicKey,
+    [],
+    amount));
+
+  instructions.push(new TransactionInstruction({
+    keys: [],
+    programId: MEMO_ID,
+    data: Buffer.from(`🦖 address: ${await sha256(Buffer.from(address))}`),
+  }))
+
+  let tx = await sendTransaction(
+    connection,
+    wallet,
+    instructions.concat(cleanupInstructions),
+    signers
+  );
+
+
+  // TODO: call rest API with address and trasaction ID, backend should lookup memo+burn to ensure valid amount was burnt and address sha256 matches transaction memo
+
+  notify({
+    message: "Trade executed.",
+    type: "success",
+    description: `Transaction - ${tx}`,
+  });
+}
 
 export async function swap(
   connection: Connection,
@@ -1545,7 +1601,7 @@ export function tokenAccountFactory(pubKey: PublicKey, info: AccountInfo<Buffer>
 export interface ParsedAccountBase {
   pubkey: PublicKey;
   account: AccountInfo<Buffer>;
-  info: any; // TODO: change to unkown
+  info: any; // TODO: change to unkonw
 }
 
 export interface ParsedAccount<T> extends ParsedAccountBase {
