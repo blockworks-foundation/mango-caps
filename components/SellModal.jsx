@@ -49,7 +49,7 @@ export default function SellModal({open, onClose}) {
       const slippage = 1.05;
       const components = [
         {mintAddress: config.capMint, account: walletCapAccount, amount: amountToSell},
-        {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 / slippage}]
+        {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * Math.pow(10, config.usdDecimals) / slippage}]
       const programIds = {
         token: new PublicKey(config.tokenProgramId),
         swap: new PublicKey(config.swapProgramId) };
