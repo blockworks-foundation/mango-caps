@@ -63,7 +63,7 @@ export default function Card() {
 
 const CardWrapper = styled.div`
   background: #FFFFFF;
-  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #E54033 0%, #FECA1A 51.79%, #AFD803 83.48%);
+  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #ff665a 0%, #FECA1A 51.79%, #AFD803 83.48%);
   box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   border-radius: 18px;
   color: white;
