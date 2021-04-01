@@ -20,7 +20,7 @@ const ImgStyle = styled.img`
 export default function Gallery() {
   return (
     <GalleryFrame>
-      <ImgStyle src="/caps/style1.png" alt="Logo" />
+      <ImgStyle src="/caps/mcap_double.png" alt="Logo" />
     </GalleryFrame>
   )
 }
