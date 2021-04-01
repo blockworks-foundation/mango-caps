@@ -9,31 +9,32 @@ import {
 } from '@solana/web3.js';
 
 export const CFG = {
+  default: 'devnet',
   'mainnet-beta': {
     url: 'https://solana-api.projectserum.com/',
-    swapProgramId: 'SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8',
+    swapProgramId: '9bohspFveydu5Wg9Pm4mcLotLE2eBYMZ17G1aJ6ooqk1',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: '',
-    usdMint: '',
+    capMint: '2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd',
+    usdMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     usdDecimals: 6,
-    capAmount: 0,
+    capAmount: 500,
   },
   'devnet': {
     url: clusterApiUrl('devnet'),
     swapProgramId: '4agVeHTmm3Uis4Wt84NhrQXpEaV1Sb1HZmFvnkMQzDi4',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: '5Mc1knDvQarcsRZPb58XWa51RBGjB4CSjzRNSZKARPvt',
-    usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
-    usdDecimals: 9,
-    capAmount: 1000,
+    capMint: '3qAPiwUSGuqkwkvaLXkKxaoSXr9SpQDMR2xgoPQTgW7j',
+    usdMint: 'FUneZen4boSp7x3LJ1qYSd4grs2HCNQirot5pexTcBpX',
+    usdDecimals: 6,
+    capAmount: 500,
   },
 };
 
 const ConnectionContext = React.createContext();
 
 export function ConnectionProvider({ children }) {
-  const [cluster, setCluster] = useState('devnet');
-  const config = useMemo(() => CFG[cluster], [cluster]);
+  const [cluster, setCluster] = useState(CFG.default);
+  const config = useMemo(() => CFG[cluster]);
   const connection = useMemo(() => new Connection(config.url, 'recent'), [config]);
 
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list

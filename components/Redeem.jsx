@@ -17,7 +17,7 @@ const Button = styled.button`
   line-height: 1;
   letter-spacing: 0.01em;
   margin: 0 0 0 15px;
-
+  opacity: 50%;
 
 `
 

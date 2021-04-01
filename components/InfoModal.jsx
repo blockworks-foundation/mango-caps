@@ -24,24 +24,25 @@ if (!open) return null
           <Text>
             <b>Here’s how it works:</b>
           <br /> 
-          <br /> 
           $MCAPS is a token that entitles you to 1 real 
           limited edition cap, shipped globally. You can sell the token back 
-          at any time. To get a real pair, redeem a $MCAPS token.
+          at any time or to redeem a real cap, burn an $MCAPS token.
           </Text>
           <br />
           <Text>
             <b>How it’s priced: </b>
           <br /> 
-          <br /> 
           $MCAPS tokens are listed starting at $15 USDC.
-          Each buy/sell will move the price.
+          Each buy/sell will move the price. 
           The increase or decrease follows a &nbsp;
           <a style={{textDecoration: 'underline'}} href="https://blog.relevant.community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a">
             bonding curve
           </a>.
-          Enjoying $MCAPS will be a fleeting moment.
-          Mangoes can only be left out for so after all.🥭 
+          <br />
+          <br />
+          <b>Disclaimer:</b>
+          <br />
+          The redeemable token is <b>not connected</b> to our upcoming protocol and governance. This is an unaudited smart contract; the smart contract code can be found <a style={{textDecoration: 'underline'}} href="https://github.com/blockworks-foundation/solana-program-library/tree/caps">here.</a>
           </Text>
           <br />
           <button onClick={onClose}>Close</button>
