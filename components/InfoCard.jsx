@@ -10,15 +10,12 @@ const [isOpen, setIsOpen] = useState(false)
           Buy and sell real Mango Market Caps!
           Choose between orange and black on redemption.
           Free shipping worldwide.
-          This redeemable token is <b>not connected</b> to our upcoming protocol and governance.
-          &ensp;
           <a
           onClick={() => setIsOpen(true)}
           style={{
             color: '#e9950d',
             fontWeight: 500,
-          }}>
-            Learn More
+          }}> &nbsp;Learn More
         </a>
         </Text>
         <InfoModal open={isOpen} onClose={() => setIsOpen(false)} />

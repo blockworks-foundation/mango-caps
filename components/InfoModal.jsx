@@ -42,7 +42,7 @@ if (!open) return null
           <br />
           <b>Disclaimer:</b>
           <br />
-          The redeemable token is <b>not connected</b> to our upcoming protocol and governance.
+          The redeemable token is <b>not connected</b> to our upcoming protocol and governance. This is an unaudited smart contract; the smart contract code can be found <a style={{textDecoration: 'underline'}} href="https://github.com/blockworks-foundation/solana-program-library/tree/caps">here.</a>
           </Text>
           <br />
           <button onClick={onClose}>Close</button>
