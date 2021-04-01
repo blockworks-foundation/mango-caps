@@ -21,20 +21,28 @@ export function AccountsProvider({ children }) {
   const [walletCapAccount, setWalletCapAccount] = useState();
   const mintCapAccount = useMint(config.capMint);
   const [walletUsdAccount, setWalletUsdAccount] = useState();
-  const [balanceUpdated, setBalanceUpdated] = useState(0);
 
-  async function getBalance(account) {
+  const [poolCapBalance, setPoolCapBalance] = useState(0);
+  //const [poolUsdBalance, setPoolUsdBalance] = useState(0);
+  const [walletCapBalance, setWalletCapBalance] = useState(0);
+  //const [walletUsdBalance, setWalletUsdBalance] = useState(0);
+
+  async function refreshBalance(account, set) {
     if (account) {
-      console.log('getBalance', account.pubkey.toString());
       const _account = await cache.queryAccount(
         connection,
         account.pubkey
       );
-      return _account.info.amount.toNumber();
+      set(_account.info.amount.toNumber());
     } else {
-      return undefined;
+      set(0);
     }
   }
+
+  useEffect(() => refreshBalance(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
+  //useEffect(() => refreshBalance(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
+  useEffect(() => refreshBalance(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
+  //useEffect(() => refreshBalance(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
 
   const refreshPoolAccounts = async () => {
     if (connection && pool) {
@@ -67,25 +75,28 @@ export function AccountsProvider({ children }) {
 
     accounts.value.forEach(a => cache.addAccount(a.pubkey, a.account));
 
-    setWalletCapAccount(getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey));
-    setWalletUsdAccount(getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey));
+    const _walletCapAccount = getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey);
+    const _walletUsdAccount = getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey);
+    setWalletCapAccount(_walletCapAccount);
+    setWalletUsdAccount(_walletUsdAccount);
   };
+  
   useEffect(refreshWalletAccounts, [config, connection, connected, wallet]);
 
-  function subscribeToAccount(account) {
+  function subscribeToAccount(account, set) {
     if (connection && account) {
       let id = connection.onAccountChange(account.pubkey, (info, context) => {
         cache.addAccount(account.pubkey, info);
-        setBalanceUpdated(Date.now());
+        refreshBalance(account, set)
       });
       return () => { connection.removeAccountChangeListener(id); };
     }
   }
 
-  useEffect(() => subscribeToAccount(poolCapAccount), [connection, poolCapAccount]);
-  useEffect(() => subscribeToAccount(poolUsdAccount), [connection, poolUsdAccount]);
-  useEffect(() => subscribeToAccount(walletCapAccount), [connection, walletCapAccount]);
-  useEffect(() => subscribeToAccount(walletUsdAccount), [connection, walletUsdAccount]);
+  useEffect(() => subscribeToAccount(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
+  //useEffect(() => subscribeToAccount(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
+  useEffect(() => subscribeToAccount(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
+  //useEffect(() => subscribeToAccount(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
 
 
   return (
@@ -96,8 +107,10 @@ export function AccountsProvider({ children }) {
         walletCapAccount,
         walletUsdAccount,
         mintCapAccount,
-        getBalance,
-        balanceUpdated,
+        poolCapBalance,
+        //poolUsdBalance,
+        walletCapBalance,
+        //walletUsdBalance,
         refreshWalletAccounts
       }}
     >
@@ -110,16 +123,17 @@ export function useMint(key) {
   const { connection } = useConnection();
   const [mint, setMint] = useState();
 
-  const id = typeof key === "string" ? key : key?.toBase58();
-  const pubkey = new PublicKey(id);
+  const pubkey = new PublicKey(key);
 
   useEffect(() => {
-    if (!id) {
+
+    console.log(`mint ${key}`);
+    if (!key) {
       return;
     }
 
     cache
-      .queryMint(connection, id)
+      .queryMint(connection, key)
       .then(setMint)
       .catch((err) =>
         notify({
@@ -128,15 +142,15 @@ export function useMint(key) {
         })
       );
 
-    const dispose = connection.onAccountChange(pubkey, (account) => {
+    const id = connection.onAccountChange(pubkey, (account) => {
       if (account) {
         cache.addMint(pubkey, account);
       }
     });
     return () => {
-      dispose();
+      connection.removeAccountChangeListener(id); 
     };
-  }, [connection, id]);
+  }, [connection, key]);
 
   return mint;
 };

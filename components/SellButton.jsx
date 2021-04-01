@@ -21,14 +21,10 @@ const Button = styled.button`
 
 export default function SellButton() {
 
-  const { walletCapAccount, getBalance, balanceUpdated } = useAccounts();
+  const { walletCapAccount, walletCapBalance } = useAccounts();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [hasCap, setHasCap] = useState(false);
-
-  useEffect(async() => {
-    setHasCap(walletCapAccount && 0 < await getBalance(walletCapAccount));
-  }, [walletCapAccount, balanceUpdated]);
+  const hasCap = walletCapBalance > 0;
 
   return (
     <>

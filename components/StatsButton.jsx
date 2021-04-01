@@ -32,7 +32,7 @@ export default function StatsButton() {
   const { mintCapAccount } = useAccounts();
   const [isOpen, setIsOpen] = useState(false)
 
-  const redeemed = config.capAmount - (mintCapAccount?.supply.toNumber() || 0);
+  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
 
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import IncrementToken from './IncrementToken'
@@ -23,7 +23,7 @@ export default function BuyModal({open, onClose}) {
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { walletCapAccount, walletUsdAccount, refreshWalletAccounts } = useAccounts();
+  const { walletCapAccount, walletCapBalance, walletUsdAccount, refreshWalletAccounts } = useAccounts();
   const { pool } = usePool();
   const {
     amountToBuy,
@@ -34,6 +34,14 @@ export default function BuyModal({open, onClose}) {
     formattedPrice,
   } = usePrice();
 
+  const scalperLimit = Math.max(0, 5 - walletCapBalance);
+  const hasReachedScalperLimit = scalperLimit == 0;
+
+  useEffect(() => {
+    if (connected) {
+       setAmountToBuy(Math.min(amountToBuy, scalperLimit));
+    }
+  }, [connected, walletCapBalance]);
 
   const [buying, setBuying] = useState(false);
 
@@ -44,13 +52,22 @@ export default function BuyModal({open, onClose}) {
       return
     }
 
+    if (hasReachedScalperLimit) {
+      console.log('nice try');
+      return;
+    }
+
     try {
       setBuying(true);
 
       const slippage = 1.05;
       const components = [
-        {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 * slippage},
-        {mintAddress: config.capMint, account: walletCapAccount, amount: amountToBuy}];
+        { mintAddress: config.usdMint,
+          account: walletUsdAccount,
+          amount: price * Math.pow(10, config.usdDecimals) * slippage},
+        { mintAddress: config.capMint,
+          account: walletCapAccount,
+          amount: amountToBuy}];
       const programIds = {
         token: new PublicKey(config.tokenProgramId),
         swap: new PublicKey(config.swapProgramId) };
@@ -73,7 +90,6 @@ export default function BuyModal({open, onClose}) {
   return (
     <>
     <OVERLAY_STYLES> </OVERLAY_STYLES>
- >
       <CardWrapper>
         <FullWidth>
           <Title>Mango Market Caps Edition 0</Title>
@@ -101,7 +117,7 @@ export default function BuyModal({open, onClose}) {
               </CapCount>
             </span>
             <Increment>
-               <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={1} max={5} />
+               <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={0} max={scalperLimit} />
             </Increment>
           </MarketData>
         </FullWidth>
@@ -118,11 +134,12 @@ export default function BuyModal({open, onClose}) {
         marginTop:"-9px",
       }}
     /></Price>
-        <Button disabled={loadingAccounts} onClick={handleClick} style={{
+        <Button disabled={loadingAccounts || hasReachedScalperLimit} onClick={handleClick} style={{
           background: connected ? bgConnected : bgDisconnected,
-          opacity: loadingAccounts ? "50%" : "100%"}}>
-          { loadingAccounts && "⏳ (loading) " }
-          { !loadingAccounts && (wallet && connected ? "Buy" : "Connect Wallet" )}
+          opacity: loadingAccounts || hasReachedScalperLimit ? "50%" : "100%"}}>
+        { loadingAccounts && "⏳ (confirm in wallet) " }
+        { !loadingAccounts && !(wallet && connected) && "Connect Wallet" }
+        { !loadingAccounts && wallet && connected && ( hasReachedScalperLimit ? "You bought too many caps! 😅" : "Buy")}
         </Button>  
         <br />  
         <button onClick={onClose}>Close</button>
@@ -203,8 +220,8 @@ const CurrentPrice = styled.p`
 
 
 const CapCount = styled.p`
-color: #605a77;
-font-weight: 400;
+  color: #605a77;
+  font-weight: 400;
   margin: 0px;
   font-size: 13px;
   font-feature-settings: 'tnum' on, 'onum' on;

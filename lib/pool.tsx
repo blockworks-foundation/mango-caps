@@ -58,6 +58,7 @@ export interface PoolInfo {
     pubkey: PublicKey;
     data: any;
     account: AccountInfo<Buffer>;
+    curve: any;
   };
 }
 
@@ -965,9 +966,9 @@ export async function calculateDependentAmount(
     return;
   }
 
-  const offsetCurve = pool.raw?.data?.curve?.offset;
+  const offsetCurve = pool.raw?.curve?.offset;
   if (offsetCurve) {
-    amountB += offsetCurve.token_b_offset;
+    amountB = amountB.add(u64.fromBuffer(offsetCurve.token_b_offset));
   }
 
   const mintA = await cache.queryMint(connection, accountA.info.mint);
@@ -1026,7 +1027,7 @@ export async function calculateDependentAmount(
   const result = depAdjustedAmount.div(depPrecision).toNumber() +
                  depAdjustedAmount.mod(depPrecision).toNumber() / depPrecision.toNumber();
 
-  console.log(`estimate ${result} ${depAdjustedAmount}/${depPrecision}`);
+  console.log(`estimate ${result} ${depBasketQuantity}->${depAdjustedAmount}/${depPrecision}`);
   return result;
 }
 

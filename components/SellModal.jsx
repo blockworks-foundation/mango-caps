@@ -46,7 +46,7 @@ export default function SellModal({open, onClose}) {
     try {
       setSelling(true);
       // TODO set slippage back after fixing rounding issue
-      const slippage = 100;
+      const slippage = 1.05;
       const components = [
         {mintAddress: config.capMint, account: walletCapAccount, amount: amountToSell},
         {mintAddress: config.usdMint, account: walletUsdAccount, amount: price * 1000000000 / slippage}]
@@ -70,7 +70,8 @@ export default function SellModal({open, onClose}) {
     <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
         <CardWrapper>
-          <Title>Sell Mango Market Caps</Title>
+        <Title>Mango Market Caps Edition 0</Title>
+          <SubTitle>$MCAPS</SubTitle>
           <Gallery />
           <FullWidth>
           <MarketData>
@@ -91,7 +92,7 @@ export default function SellModal({open, onClose}) {
               */}
 
             <CapCount>
-              {`You own ${amountAvailable}`}
+                {`You own ${amountAvailable}`}
             </CapCount>
           </span>
           <Increment>
@@ -101,13 +102,22 @@ export default function SellModal({open, onClose}) {
           </FullWidth>
         </CardWrapper>
         <InfoCard>
-          <TitleSub>Here's what you'll earn:</TitleSub>
-          <Price>${formattedPrice}</Price>
+          <TitleSub>Here's what you'll receive:</TitleSub>
+          <Price>${formattedPrice}&thinsp;<img
+      height="30px"
+      width="30px"
+      src="/tether_logo.svg"
+      style={{
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        marginTop:"-9px",
+      }}
+    /></Price>
           <Button disabled={loadingAccounts} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
             opacity: loadingAccounts ? "50%" : "100%"}}>
-            { loadingAccounts && "⏳ (loading) " }
-            { wallet && connected ? "Sell" : "Connect Wallet" }
+            { loadingAccounts && "⏳ (confirm in wallet) " }
+            { !loadingAccounts && (wallet && connected ? "Sell" : "Connect Wallet" ) }
           </Button>  
           <br />  
           <button onClick={onClose}>Close</button>
@@ -132,11 +142,11 @@ const FullWidth = styled.div`
 
 const CardWrapper = styled.div`
   background: #000000;
-  background: linear-gradient(162.92deg, #2b2b2b 12.36%, #000000 94.75%);
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #E54033 0%, #FECA1A 51.79%, #AFD803 83.48%);
+  box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   position: fixed;
-  width: 400px;
-  top: 40%;
+  width: 370px;
+  top: 400px;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 20px; 
@@ -152,12 +162,11 @@ const CardWrapper = styled.div`
 `
 const InfoCard = styled.div`
   position: fixed;
-  width: 400px;
-  top: 70%;
+  width: 370px;
+  height: auto;
+  top: 710px;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
-  height: auto;
   background: #EFEDF9;
   border-radius: 0 0 20px 20px;
   color: #000;
@@ -169,12 +178,12 @@ const InfoCard = styled.div`
   z-index: 999;
 `
 const MarketData = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
-  margin-top: 1rem;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-end;
+width: 100%;
+margin-top: 1rem;
 `
 const CurrentPrice = styled.p`
   font-weight: 600;
@@ -184,7 +193,7 @@ const CurrentPrice = styled.p`
   font-feature-settings: 'tnum' on, 'onum' on;
 `
 const CapCount = styled.p`
-  color: #aeaeae;
+  color: #605a77;
   font-weight: 400;
   margin: 0px;
   font-size: 13px;
@@ -213,6 +222,16 @@ const TitleSub = styled.p`
   margin-top: 80px;
 
 `
+
+const SubTitle = styled.p`
+  color: #524646;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 156.7%;
+  width: 100%;
+  margin: 0;
+  font-feature-settings: 'tnum' on, 'onum' on;
+`
 const Price = styled.p`
   font-weight: 800;
   font-size: 44px;
@@ -238,6 +257,12 @@ const Button = styled.button`
   margin: 15px 0 0 0;
   letter-spacing: 0.01em;
   align-items: center;
+
+  :hover {
+    transform: scale(1.04);
+    transition-duration: 0.5s;
+    box-shadow: 0px 5px 12px rgba(170, 131, 0, 0.46);
+  }
 
 `
 

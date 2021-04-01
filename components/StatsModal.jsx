@@ -7,21 +7,12 @@ import { useConnection } from '../providers/connection'
 export default function StatsModal({open, onClose}) {
 
   const { config } = useConnection();
-  const { mintCapAccount, poolCapAccount, getBalance, balanceUpdated } = useAccounts();
-  const [amountAvailable, setAmountAvailable] = useState(0);
-
-  useEffect(async() => {
-    if (poolCapAccount) {
-      console.log('Stats.amountAvailable');
-      setAmountAvailable(await getBalance(poolCapAccount));
-    }
-  },[poolCapAccount, balanceUpdated]);
-
+  const { mintCapAccount, poolCapAccount, poolCapBalance } = useAccounts();
 
   if (!open) return null
 
   const initial = config.capAmount;
-  const redeemed = config.capAmount - mintCapAccount.supply.toNumber();
+  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
 
   return (
 
@@ -55,7 +46,7 @@ export default function StatsModal({open, onClose}) {
                 </span>
                 Remaining $MCAPS
               </p>
-              <p>{amountAvailable}</p>
+              <p>{poolCapBalance}</p>
           </Description>
           <Shim />
           <Text>

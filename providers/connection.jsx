@@ -22,7 +22,7 @@ export const CFG = {
     url: clusterApiUrl('devnet'),
     swapProgramId: '4agVeHTmm3Uis4Wt84NhrQXpEaV1Sb1HZmFvnkMQzDi4',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: 'ApXpz6g1SX8RxN2MWxKQg24o91XLZ3HcySj6sxgfMymK',
+    capMint: '5Mc1knDvQarcsRZPb58XWa51RBGjB4CSjzRNSZKARPvt',
     usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
     usdDecimals: 9,
     capAmount: 1000,
@@ -33,7 +33,7 @@ const ConnectionContext = React.createContext();
 
 export function ConnectionProvider({ children }) {
   const [cluster, setCluster] = useState('devnet');
-  const config = useMemo(() => CFG[cluster]);
+  const config = useMemo(() => CFG[cluster], [cluster]);
   const connection = useMemo(() => new Connection(config.url, 'recent'), [config]);
 
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
