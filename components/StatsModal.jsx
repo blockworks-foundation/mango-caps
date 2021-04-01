@@ -34,7 +34,7 @@ export default function StatsModal({open, onClose}) {
                 </span>
                 Redeemed $MCAPS
               </p>
-              <p>500</p>
+              <p>0</p>
           </Description>
           <Description>
               <p>

@@ -7,7 +7,11 @@ const [isOpen, setIsOpen] = useState(false)
   return (
       <CardWrapper>
         <Text>
-        Buy and sell real Mango Market Caps! Choose between orange and black on redemption. Free shipping worldwide.&ensp;
+          Buy and sell real Mango Market Caps!
+          Choose between orange and black on redemption.
+          Free shipping worldwide.
+          This redeemable token is <b>not connected</b> to our upcoming protocol and governance.
+          &ensp;
           <a
           onClick={() => setIsOpen(true)}
           style={{
@@ -15,7 +19,7 @@ const [isOpen, setIsOpen] = useState(false)
             fontWeight: 500,
           }}>
             Learn More
-          </a>
+        </a>
         </Text>
         <InfoModal open={isOpen} onClose={() => setIsOpen(false)} />
       </CardWrapper>

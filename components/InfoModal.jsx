@@ -24,7 +24,6 @@ if (!open) return null
           <Text>
             <b>Here’s how it works:</b>
           <br /> 
-          <br /> 
           $MCAPS is a token that entitles you to 1 real 
           limited edition cap, shipped globally. You can sell the token back 
           at any time or to redeem a real cap, burn an $MCAPS token.
@@ -32,7 +31,6 @@ if (!open) return null
           <br />
           <Text>
             <b>How it’s priced: </b>
-          <br /> 
           <br /> 
           $MCAPS tokens are listed starting at $15 USDC.
           Each buy/sell will move the price. 
