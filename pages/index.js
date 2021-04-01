@@ -7,6 +7,9 @@ import BuyButton from  '../components/BuyButton'
 import SellButton from  '../components/SellButton'
 import Redeem from  '../components/Redeem'
 import CapCount from  '../components/CapCount'
+import Disclaimer from  '../components/Disclaimer'
+
+
 
 
 import Card from '../components/Card'
@@ -74,6 +77,7 @@ export default function Home() {
             <SellButton />
             <Redeem />
           </div>
+          <Disclaimer />
         </Content>
       </div>
       <BottomBar />
