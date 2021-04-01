@@ -7,13 +7,11 @@ const [isOpen, setIsOpen] = useState(false)
   return (
       <CardWrapper>
         <Text>
-          Buy and sell real mango market caps.
-          Choose between fresh mango orange and stylish black
-          on redemption. Worldwide free shipping.&ensp;
+        Buy and sell real Mango Market Caps! Choose between orange and black on redemption. Free shipping worldwide.&ensp;
           <a
           onClick={() => setIsOpen(true)}
           style={{
-            color: '#909090',
+            color: '#e9950d',
             fontWeight: 500,
           }}>
             Learn More
