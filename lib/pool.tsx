@@ -683,10 +683,14 @@ export async function redeem(
   // TODO: call rest API with address and trasaction ID, backend should lookup memo+burn to ensure valid amount was burnt and address sha256 matches transaction memo
 
   notify({
-    message: "Trade executed.",
+    message: "Redeem executed.",
     type: "success",
     description: `Transaction - ${tx}`,
   });
+
+  console.log(tx);
+
+  return tx;
 }
 
 export async function swap(

@@ -50,7 +50,22 @@ export default function RedeemModal({open, onClose}) {
         token: new PublicKey(config.tokenProgramId),
         swap: new PublicKey(config.swapProgramId) };
 
-      await redeem(connection, wallet, walletCapAccount, amountToSell, 'Neverland', programIds);
+      const createOrderRes = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address : 'Neverland' }),
+      });
+
+      const order = await createOrderRes.json();
+
+      const txHash = await redeem(connection, wallet, walletCapAccount, amountToSell, order.id.toString(), programIds);
+
+      await fetch(`/api/order/${order.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ txHash }),
+      });
+
     } catch (e) {
       console.error(e);
     } finally {
