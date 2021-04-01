@@ -22,10 +22,10 @@ export const CFG = {
     url: clusterApiUrl('devnet'),
     swapProgramId: '4agVeHTmm3Uis4Wt84NhrQXpEaV1Sb1HZmFvnkMQzDi4',
     tokenProgramId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-    capMint: '5Mc1knDvQarcsRZPb58XWa51RBGjB4CSjzRNSZKARPvt',
+    capMint: '4a88o4HibvEm2CvxLkMTs8ciryhkvcx2moBhp6rNnVRq',
     usdMint: '7tSPGVhneTBWZjLGJGZb9V2UntC7T98cwtSLtgcXjeSs',
     usdDecimals: 9,
-    capAmount: 1000,
+    capAmount: 500,
   },
 };
 
