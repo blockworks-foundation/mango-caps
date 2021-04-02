@@ -13,6 +13,7 @@ generator client {
 model Orders {
   id            Int       @default(autoincrement()) @id
   address       String
+  style         String
   txHash        String?   @map(name: "tx_hash")
   fullfilled    Boolean   @default(false)
   createdAt     DateTime  @default(now()) @map(name: "created_at")

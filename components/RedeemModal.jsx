@@ -35,6 +35,7 @@ export default function RedeemModal({open, onClose}) {
 
   const [redeeming, setRedeeming] = useState(false);
   const [address, setAddress] = useState('');
+  const [style, setStyle] = useState('black');
 
 
   const handleClick = async function() {
@@ -53,7 +54,7 @@ export default function RedeemModal({open, onClose}) {
       const createOrderRes = await fetch('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address : 'Neverland' }),
+        body: JSON.stringify({ address, style }),
       });
 
       const order = await createOrderRes.json();

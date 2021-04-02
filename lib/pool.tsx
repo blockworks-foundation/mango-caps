@@ -18,8 +18,6 @@ import { Numberu64 } from "@solana/spl-token-swap";
 import * as BufferLayout from "buffer-layout";
 import { sendTransaction } from "./transaction";
 import BN from 'bn.js';
-import {sha256} from 'crypto-hash';
-
 
 const notify = console.log;
 
@@ -634,14 +632,14 @@ export const isLatest = (swap: AccountInfo<Buffer>) => {
   return swap.data.length === TokenSwapLayout.span;
 };
 
-const MEMO_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+export const MEMO_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 export async function redeem(
   connection: Connection,
   wallet: any,
   account: TokenAccount, 
   amount: number, 
-  address: string,
+  id: string,
   programIds: ProgramIds) {
   const instructions: TransactionInstruction[] = [];
   const cleanupInstructions: TransactionInstruction[] = [];
@@ -669,7 +667,7 @@ export async function redeem(
   instructions.push(new TransactionInstruction({
     keys: [],
     programId: MEMO_ID,
-    data: Buffer.from(`🦖 address: ${await sha256(Buffer.from(address))}`),
+    data: Buffer.from(`🥭🧢#${id}`),
   }))
 
   let tx = await sendTransaction(
@@ -678,9 +676,6 @@ export async function redeem(
     instructions.concat(cleanupInstructions),
     signers
   );
-
-
-  // TODO: call rest API with address and trasaction ID, backend should lookup memo+burn to ensure valid amount was burnt and address sha256 matches transaction memo
 
   notify({
     message: "Redeem executed.",
