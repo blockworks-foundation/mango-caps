@@ -8,7 +8,10 @@ const [isOpen, setIsOpen] = useState(false)
       <CardWrapper>
         <Text>
           Buy and sell real Mango Market Caps!
-          Choose between orange and black on redemption.
+          Choose between <i>Mango</i> or <i>Black</i> on redemption.
+          
+          <br />
+          <br />
           Free shipping worldwide.
           <a
           onClick={() => setIsOpen(true)}

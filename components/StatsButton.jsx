@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import StatsModal from '../components/StatsModal'
+import { useAccounts } from '../providers/accounts'
+import { useConnection } from '../providers/connection'
 
 
 const Button = styled.button`
@@ -22,19 +24,23 @@ const Button = styled.button`
     box-shadow: 0px 5px 12px rgba(170, 131, 0, 0.36);
   }
 `
-const numRedeemed = 0;
 
 
 export default function StatsButton() {
 
+  const { config } = useConnection();
+  const { mintCapAccount } = useAccounts();
   const [isOpen, setIsOpen] = useState(false)
+
+  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
+
 
   return (
     <>
     <Button onClick={() => setIsOpen(true)}>
       <div className="space-x-2">
         <span>🔥</span>
-        <span>{numRedeemed} redeemed</span>
+        <span>{redeemed} redeemed</span>
       </div>
     </Button>
     <StatsModal open={isOpen} onClose={() => setIsOpen(false)} />

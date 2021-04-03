@@ -1,5 +1,9 @@
 
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import RedeemModal from '../components/RedeemModal'
+import { useAccounts } from '../providers/accounts'
+import { SellPriceProvider } from '../providers/price'
 
 const Button = styled.button`
   background: #EFEDF9;
@@ -18,11 +22,23 @@ const Button = styled.button`
 `
 
 export default function Redeem() {
+
+  const { walletCapAccount, walletCapBalance } = useAccounts();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const hasCap = walletCapBalance > 0;
+
   return (
     <>
-    <Button disbaled>
-        <span>🔜 Redeem</span>
-    </Button>
+    <Button disabled={!hasCap} style={{
+      opacity: hasCap ? 1.0 : 0.5,
+      cursor: hasCap ? "pointer" : "default",
+    }} onClick={() => setIsOpen(true)}>
+        <span>Redeem</span>
+      </Button>
+      <SellPriceProvider>
+        <RedeemModal open={isOpen} onClose={() => setIsOpen(false)} />
+      </SellPriceProvider>
     </>
   );
 }
