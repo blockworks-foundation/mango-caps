@@ -1,69 +1,59 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import Tilt from 'react-tilt'
+import React, { useEffect, useState } from "react"
+import styled from "styled-components"
+import Tilt from "react-tilt"
 
-import { usePrice } from '../providers/price'
+import { usePrice } from "../providers/price"
 
-import Gallery from './Gallery'
-import StatsModal from './StatsModal'
-
+import Gallery from "./Gallery"
+import StatsModal from "./StatsModal"
 
 export default function Card() {
+  const { amountToBuy, setAmountToBuy, amountAvailable, totalSupply, price, formattedPrice } = usePrice()
 
-  const {
-    amountToBuy,
-    setAmountToBuy,
-    amountAvailable,
-    totalSupply,
-    price,
-    formattedPrice
-  } = usePrice();
-
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(false)
 
   return (
     <>
-    <Tilt
-      style={{ background: '#000', borderRadius: '20px' }}
-      options={{ scale: 1.01, max: 10, glare: true, 'max-glare': 1, speed: 1000 }}
-    >
-      <CardWrapper>
-        <Title>Mango Market Caps Edition 0</Title>
-        <SubTitle>$MCAPS</SubTitle>
-        <Gallery />
-        <MarketData>
-          <span>
-            <CurrentPrice>
-              ${formattedPrice}&thinsp;
-              <img
-                height="20px"
-                width="20px"
-                src="/tether_logo.svg"
-                style={{
-                  display: 'inline-block',
-                  verticalAlign: 'middle',
-                  marginTop:"-6px",
-                }}/>
-            </CurrentPrice>
-            <CapCount>
-              {`${amountAvailable}/${totalSupply} available`}
-            </CapCount>
-          </span>
-          <button onClick={() => setShowInfo(true)}>
-            <InfoButton>?</InfoButton>
-            <Dynamic>Dynamic Pricing Stats</Dynamic>
-          </button>
-        </MarketData>
-      </CardWrapper>
-    </Tilt>
-    <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
+      <Tilt
+        style={{ background: "#000", borderRadius: "20px" }}
+        options={{ scale: 1.01, max: 10, glare: true, "max-glare": 1, speed: 1000 }}
+      >
+        <CardWrapper>
+          <Title>Mango Market Caps Edition 0</Title>
+          <SubTitle>$MCAPS</SubTitle>
+          <Gallery />
+          <MarketData>
+            <span>
+              <CurrentPrice>
+                ${formattedPrice}&thinsp;
+                <img
+                  height="20px"
+                  width="20px"
+                  src="/tether_logo.svg"
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginTop: "-6px",
+                  }}
+                />
+              </CurrentPrice>
+              <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
+            </span>
+            <button onClick={() => setShowInfo(true)}>
+              <InfoButton>?</InfoButton>
+              <Dynamic>Dynamic Pricing Stats</Dynamic>
+            </button>
+          </MarketData>
+        </CardWrapper>
+      </Tilt>
+      <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
     </>
   )
 }
 
 const CardWrapper = styled.div`
-  background: #FFFFFF;
-  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #ff665a 0%, #FECA1A 51.79%, #AFD803 83.48%);
+  background: #ffffff;
+  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #ff665a 0%, #feca1a 51.79%, #afd803 83.48%);
   box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   border-radius: 18px;
   color: white;
@@ -93,7 +83,7 @@ const SubTitle = styled.p`
   line-height: 156.7%;
   width: 100%;
   margin: 0;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
 
 const CapCount = styled.p`
@@ -101,7 +91,7 @@ const CapCount = styled.p`
   font-weight: 400;
   margin: 0px;
   font-size: 13px;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
 
 const CurrentPrice = styled.p`
@@ -109,7 +99,7 @@ const CurrentPrice = styled.p`
   font-size: 24px;
   margin: 0px;
   margin-bottom: 0.2rem;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
 
 const Dynamic = styled.p`
@@ -143,4 +133,3 @@ const MarketData = styled.div`
   width: 100%;
   margin-top: 1rem;
 `
-

@@ -1,95 +1,84 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState } from "react"
+import styled from "styled-components"
 
-import IncrementToken from './IncrementToken'
-import Gallery from './Gallery'
-import { bgConnected, bgDisconnected } from './WalletButton'
-import { useAccounts } from '../providers/accounts'
-import { useConnection } from '../providers/connection'
-import { usePrice } from '../providers/price'
-import { usePool } from '../providers/pool'
-import { useWallet } from '../providers/wallet'
-import { cache, swap } from '../lib/pool'
+import IncrementToken from "./IncrementToken"
+import Gallery from "./Gallery"
+import { bgConnected, bgDisconnected } from "./WalletButton"
+import { useAccounts } from "../providers/accounts"
+import { useConnection } from "../providers/connection"
+import { usePrice } from "../providers/price"
+import { usePool } from "../providers/pool"
+import { useWallet } from "../providers/wallet"
+import { cache, swap } from "../lib/pool"
 
+import { PublicKey } from "@solana/web3.js"
 
-import {
-  PublicKey,
-} from "@solana/web3.js";
-
-
-export default function BuyModal({open, onClose}) {
-
+export default function BuyModal({ open, onClose }) {
   if (!open) return null
 
-  const { connection, config } = useConnection();
-  const { wallet, connected } = useWallet();
-  const { walletCapAccount, walletCapBalance, walletUsdAccount, refreshWalletAccounts } = useAccounts();
-  const { pool } = usePool();
-  const {
-    amountToBuy,
-    setAmountToBuy,
-    amountAvailable,
-    totalSupply,
-    price,
-    formattedPrice,
-  } = usePrice();
+  const { connection, config } = useConnection()
+  const { wallet, connected } = useWallet()
+  const { walletCapAccount, walletCapBalance, walletUsdAccount, refreshWalletAccounts } = useAccounts()
+  const { pool } = usePool()
+  const { amountToBuy, setAmountToBuy, amountAvailable, totalSupply, price, formattedPrice } = usePrice()
 
-  const scalperLimit = Math.max(0, 5 - walletCapBalance);
-  const hasReachedScalperLimit = scalperLimit == 0;
+  const scalperLimit = Math.max(0, 5 - walletCapBalance)
+  const hasReachedScalperLimit = scalperLimit == 0
 
   useEffect(() => {
     if (connected) {
-       setAmountToBuy(Math.min(amountToBuy, scalperLimit));
+      setAmountToBuy(Math.min(amountToBuy, scalperLimit))
     }
-  }, [connected, walletCapBalance]);
+  }, [connected, walletCapBalance])
 
-  const [buying, setBuying] = useState(false);
+  const [buying, setBuying] = useState(false)
 
-  const handleClick = async function() {
-
+  const handleClick = async function () {
     if (!connected) {
-      wallet.connect();
+      wallet.connect()
       return
     }
 
     if (hasReachedScalperLimit) {
-      console.log('nice try');
-      return;
+      console.log("nice try")
+      return
     }
 
     try {
-      setBuying(true);
+      setBuying(true)
 
-      const slippage = 1.05;
+      const slippage = 1.05
       const components = [
-        { mintAddress: config.usdMint,
+        {
+          mintAddress: config.usdMint,
           account: walletUsdAccount,
-          amount: price * Math.pow(10, config.usdDecimals) * slippage},
-        { mintAddress: config.capMint,
-          account: walletCapAccount,
-          amount: amountToBuy}];
+          amount: price * Math.pow(10, config.usdDecimals) * slippage,
+        },
+        { mintAddress: config.capMint, account: walletCapAccount, amount: amountToBuy },
+      ]
       const programIds = {
         token: new PublicKey(config.tokenProgramId),
-        swap: new PublicKey(config.swapProgramId) };
+        swap: new PublicKey(config.swapProgramId),
+      }
 
-      console.log('swap', {connection, wallet, components, slippage, programIds, undefined, pool});
+      console.log("swap", { connection, wallet, components, slippage, programIds, undefined, pool })
 
-      await swap(connection, wallet, components, programIds, undefined, pool);
+      await swap(connection, wallet, components, programIds, undefined, pool)
 
       // refresh wallet accounts in-case we just created a new cap account for this user
-      await refreshWalletAccounts();
+      await refreshWalletAccounts()
     } catch (e) {
-      console.error(e);
+      console.error(e)
     } finally {
-      setBuying(false);
+      setBuying(false)
     }
-  };
+  }
 
   const loadingAccounts = connected && !(walletUsdAccount && pool && !buying)
 
   return (
     <>
-    <OVERLAY_STYLES> </OVERLAY_STYLES>
+      <OVERLAY_STYLES> </OVERLAY_STYLES>
       <CardWrapper>
         <FullWidth>
           <Title>Mango Market Caps Edition 0</Title>
@@ -97,7 +86,7 @@ export default function BuyModal({open, onClose}) {
           <Gallery />
           <MarketData>
             <span>
-              { /*
+              {/*
               <CurrentPrice>
                 ${formattedPrice} USDT &thinsp;
                 <img
@@ -111,41 +100,47 @@ export default function BuyModal({open, onClose}) {
                   }}/>
               </CurrentPrice>
               */}
-      
-              <CapCount>
-                {`${amountAvailable}/${totalSupply} available`}
-              </CapCount>
+
+              <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
             </span>
             <Increment>
-               <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={0} max={scalperLimit} />
+              <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={0} max={scalperLimit} />
             </Increment>
           </MarketData>
         </FullWidth>
       </CardWrapper>
       <InfoCard>
         <TitleSub>Here's what you owe:</TitleSub>
-        <Price>${formattedPrice} <img
-      height="30px"
-      width="30px"
-      src="/tether_logo.svg"
-      style={{
-        display: 'inline-block',
-        verticalAlign: 'middle',
-        marginTop:"-9px",
-      }}
-    /></Price>
-        <Button disabled={loadingAccounts || hasReachedScalperLimit} onClick={handleClick} style={{
-          background: connected ? bgConnected : bgDisconnected,
-          opacity: loadingAccounts || hasReachedScalperLimit ? "50%" : "100%"}}>
-        { loadingAccounts && "⏳ (confirm in wallet) " }
-        { !loadingAccounts && !(wallet && connected) && "Connect Wallet" }
-        { !loadingAccounts && wallet && connected && ( hasReachedScalperLimit ? "You bought too many caps! 😅" : "Buy")}
-        </Button>  
-        <br />  
+        <Price>
+          ${formattedPrice}{" "}
+          <img
+            height="30px"
+            width="30px"
+            src="/tether_logo.svg"
+            style={{
+              display: "inline-block",
+              verticalAlign: "middle",
+              marginTop: "-9px",
+            }}
+          />
+        </Price>
+        <Button
+          disabled={loadingAccounts || hasReachedScalperLimit}
+          onClick={handleClick}
+          style={{
+            background: connected ? bgConnected : bgDisconnected,
+            opacity: loadingAccounts || hasReachedScalperLimit ? "50%" : "100%",
+          }}
+        >
+          {loadingAccounts && "⏳ (confirm in wallet) "}
+          {!loadingAccounts && !(wallet && connected) && "Connect Wallet"}
+          {!loadingAccounts && wallet && connected && (hasReachedScalperLimit ? "You bought too many caps! 😅" : "Buy")}
+        </Button>
+        <br />
         <button onClick={onClose}>Close</button>
       </InfoCard>
-      </>
-)
+    </>
+  )
 }
 
 const OVERLAY_STYLES = styled.div`
@@ -155,8 +150,8 @@ const OVERLAY_STYLES = styled.div`
   right: 0;
   bottom: 0;
   background: #000;
-  opacity: .8;
-  z-index:998;
+  opacity: 0.8;
+  z-index: 998;
 `
 const FullWidth = styled.div`
   width: 100%;
@@ -164,14 +159,14 @@ const FullWidth = styled.div`
 
 const CardWrapper = styled.div`
   background: #000000;
-  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #E54033 0%, #FECA1A 51.79%, #AFD803 83.48%);
+  background: radial-gradient(132.71% 110% at 1.86% 1.91%, #e54033 0%, #feca1a 51.79%, #afd803 83.48%);
   box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   position: fixed;
   width: 370px;
   top: 400px;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 20px; 
+  border-radius: 20px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -183,7 +178,6 @@ const CardWrapper = styled.div`
   z-index: 1000;
 `
 
-
 const InfoCard = styled.div`
   position: fixed;
   width: 370px;
@@ -191,7 +185,7 @@ const InfoCard = styled.div`
   top: 710px;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #EFEDF9;
+  background: #efedf9;
   border-radius: 0 0 20px 20px;
   color: #000;
   display: flex;
@@ -215,16 +209,15 @@ const CurrentPrice = styled.p`
   font-size: 24px;
   margin: 0px;
   margin-bottom: 0.2rem;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
-
 
 const CapCount = styled.p`
   color: #605a77;
   font-weight: 400;
   margin: 0px;
   font-size: 13px;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
 const Increment = styled.div`
   /* margin-bottom: -2px; */
@@ -238,7 +231,6 @@ const Title = styled.p`
   margin: 0;
 `
 
-
 const SubTitle = styled.p`
   color: #524646;
   font-weight: 700;
@@ -246,9 +238,8 @@ const SubTitle = styled.p`
   line-height: 156.7%;
   width: 100%;
   margin: 0;
-  font-feature-settings: 'tnum' on, 'onum' on;
+  font-feature-settings: "tnum" on, "onum" on;
 `
-
 
 const TitleSub = styled.p`
   font-weight: 800;
@@ -260,7 +251,6 @@ const TitleSub = styled.p`
   padding-left: 10px;
   text-align: center;
   margin-top: 95px;
-
 `
 const Price = styled.p`
   font-weight: 800;
@@ -273,7 +263,7 @@ const Price = styled.p`
 `
 
 const Button = styled.button`
-  color: #FFFFFF;
+  color: #ffffff;
   height: 50px;
   width: 100%;
   border: none;
@@ -282,7 +272,7 @@ const Button = styled.button`
   transform: scale(1);
   transition: transform 0.3s ease 0s;
   box-sizing: border-box;
-  padding: .87rem;
+  padding: 0.87rem;
   line-height: 1;
   margin: 15px 0 0 0;
   letter-spacing: 0.01em;
