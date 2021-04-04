@@ -7,12 +7,13 @@ const SelectFrame = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #000;
   background-color: #fff;
   padding: 8px 12px 8px 12px;
   max-width: 84px;
   font-weight: 600;
+  box-shadow: 0px 2px 6px rgba(170, 131, 0, 0.29);
 
   /* margin-top: 0.5rem;
   margin-bottom: 0.5rem; */

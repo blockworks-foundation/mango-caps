@@ -9,6 +9,7 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
+    "@prisma/client": "^2.20.1",
     "@project-serum/sol-wallet-adapter": "0.1.1",
     "@solana/spl-token": "0.0.11",
     "@solana/spl-token-swap": "0.0.2",
@@ -27,6 +28,7 @@
     "autoprefixer": "^10.2.5",
     "babel-plugin-styled-components": "^1.12.0",
     "postcss": "^8.2.8",
+    "prisma": "2.20.1",
     "tailwindcss": "^2.0.4",
     "typescript": "^4.2.3"
   }
