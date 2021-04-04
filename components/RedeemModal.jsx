@@ -74,6 +74,10 @@ export default function RedeemModal({ open, onClose }) {
 
       const order = await createOrderRes.json()
 
+      if (!order.id) {
+        throw new Error("Error with creating fulfillment:", order.id, order, createOrderRes.text())
+      }
+
       const txHash = await redeem(connection, wallet, walletCapAccount, amountToSell, order.id.toString(), programIds)
 
       await fetch(`/api/order/${order.id}`, {
