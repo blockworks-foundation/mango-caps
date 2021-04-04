@@ -12,7 +12,15 @@ generator client {
 
 model Orders {
   id            Int       @default(autoincrement()) @id
-  address       String
+  firstName      String
+  lastName      String
+  email         String
+  address1      String
+  address2      String?
+  city          String
+  province      String?
+  postalCode    String?
+  country       String
   style         String
   txHash        String?   @map(name: "tx_hash")
   fullfilled    Boolean   @default(false)

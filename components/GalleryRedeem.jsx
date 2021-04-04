@@ -1,6 +1,5 @@
-import * as React from 'react'
-import styled from 'styled-components'
-
+import * as React from "react"
+import styled from "styled-components"
 
 const GalleryFrame = styled.div`
   width: 100%;
@@ -17,14 +16,16 @@ const ImgStyle = styled.img`
   border-radius: 4px;
 `
 
-export default function GalleryRedeem() {
-
+export default function GalleryRedeem({ style }) {
   return (
     <>
-    <GalleryFrame>
-      <ImgStyle src="/caps/mcap_black.png" alt="Logo" />
-    </GalleryFrame>
+      <GalleryFrame>
+        {style === "black" ? (
+          <ImgStyle src="/caps/mcap_black.png" alt="Logo" />
+        ) : (
+          <ImgStyle src="/caps/mcap_gold.png" alt="Logo" />
+        )}
+      </GalleryFrame>
     </>
   )
 }
-
