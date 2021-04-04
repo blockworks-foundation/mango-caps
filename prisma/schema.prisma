@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Orders {
+  id            Int       @default(autoincrement()) @id
+  firstName      String
+  lastName      String
+  email         String
+  address1      String
+  address2      String?
+  city          String
+  province      String?
+  postalCode    String?
+  country       String
+  style         String
+  txHash        String?   @map(name: "tx_hash")
+  fullfilled    Boolean   @default(false)
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  @@map(name: "orders")
+}

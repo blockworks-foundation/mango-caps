@@ -9,7 +9,7 @@ import {
 } from '@solana/web3.js';
 
 export const CFG = {
-  default: 'mainnet-beta',
+  default: 'devnet',
   'mainnet-beta': {
     url: 'https://solana-api.projectserum.com/',
     swapProgramId: '9bohspFveydu5Wg9Pm4mcLotLE2eBYMZ17G1aJ6ooqk1',

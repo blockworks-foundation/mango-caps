@@ -7,18 +7,18 @@ import { useAccounts } from '../providers/accounts'
 
 const Button = styled.button`
   color: #fff;
-  border: 2px solid #575467;
   background: #575467;
-  border-radius: 30px;
+  border-radius: 50px;
   transform: scale(1);
   transition: transform 0.3s ease 0s;
   box-sizing: border-box;;
-  padding: .45rem .72rem;
+  padding: .30rem .65rem .50rem .65rem;
   line-height: 1.5;
   letter-spacing: 0.01em;
   font-weight: 800;
   font-size: 20px;
   cursor: default;
+
 `
 
 const Text = styled.div`

@@ -2,17 +2,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+Create a local `.env` file that sets `DATABASE_URL=` with the heroku
+postgres url: https://dashboard.heroku.com/apps/mango-caps/resources
 
 ```bash
-npm run dev
-# or
-yarn dev
+yarn # install dependencies
+npx prisma generate # generate DB client code
+yarn dev # launch dev server
+npx prisma studio # launch DB admin panel
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-
 
 ## Setup the NFT
 
@@ -24,3 +22,8 @@ spl-token mint AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8 500
 ```
 
 
+## Migrate DB
+
+```bash
+npx prisma db push  --preview-feature
+```
