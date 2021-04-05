@@ -24,6 +24,7 @@ export default function RedeemModal({ open, onClose }) {
   const { amountToSell, setAmountToSell, amountAvailable, price, formattedPrice } = usePrice()
 
   const [redeeming, setRedeeming] = useState(false)
+  const [approved, setApproved] = useState(false)
   const [address1, setAddress1] = useState("")
   const [address2, setAddress2] = useState("")
   const [city, setCity] = useState("")
@@ -80,7 +81,7 @@ export default function RedeemModal({ open, onClose }) {
       }
 
       const txHash = await redeem(connection, wallet, walletCapAccount, amountToSell, order.id.toString(), programIds)
-
+      setApproved(true)
       await fetch(`/api/order/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -202,23 +203,30 @@ export default function RedeemModal({ open, onClose }) {
           <FormTitle>Choose your color:</FormTitle>
           <ColorPicker style={style} setStyle={setStyle} />
 
-          <Button
-            disabled={loadingAccounts}
-            onClick={handleClick}
-            style={{
-              background: connected ? bgConnected : bgDisconnected,
-              opacity: loadingAccounts ? "50%" : "100%",
-            }}
-          >
-            {loadingAccounts && "⏳ (loading) "}
-            {wallet && connected ? "Redeem" : "Connect Wallet"}
-          </Button>
-          {redeeming ? (
+          <div className="flex items-center">
+            <Button
+              disabled={loadingAccounts}
+              onClick={handleClick}
+              style={{
+                background: connected ? bgConnected : bgDisconnected,
+                opacity: loadingAccounts ? "50%" : "100%",
+              }}
+            >
+              {loadingAccounts && "⏳ (loading) "}
+              {wallet && connected ? "Redeem" : "Connect Wallet"}
+            </Button>
+          </div>
+          {redeeming && !approved ? (
             <>
-              <div className="text-sm font-light">Approve transaction in Sollet popup</div>
               <br />
+              <div className="text-sm font-light text-center">Approve transaction in Sollet popup</div>
             </>
-          ) : null}
+          ) : (
+            <>
+              <br />
+              <div className="text-sm font-light text-center">Confirming transaction. This may take a minute.</div>
+            </>
+          )}
           <br />
           <button onClick={onClose}>Close</button>
         </InfoCard>
