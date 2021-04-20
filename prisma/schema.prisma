@@ -12,7 +12,7 @@ generator client {
 
 model Orders {
   id            Int       @default(autoincrement()) @id
-  firstName      String
+  firstName     String
   lastName      String
   email         String
   address1      String
@@ -22,8 +22,10 @@ model Orders {
   postalCode    String?
   country       String
   style         String
+  owner         String?
   txHash        String?   @map(name: "tx_hash")
   fullfilled    Boolean   @default(false)
+  trackingUrl   String?
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   @@map(name: "orders")

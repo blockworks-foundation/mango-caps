@@ -8,6 +8,8 @@ import { usePool } from './pool';
 import { useWallet } from './wallet';
 import { cache, getCachedAccountByMintAndOwner } from '../lib/pool';
 
+const notify = console.log;
+
 const AccountsContext = React.createContext();
 
 export function AccountsProvider({ children }) {
