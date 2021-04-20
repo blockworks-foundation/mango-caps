@@ -15,7 +15,6 @@ export default async function handle(req, res) {
       return { id, style, fullfilled, createdAt, updatedAt };
     });
 
-    console.log(result);
     res.json(result)
   } else {
     res.json([])
