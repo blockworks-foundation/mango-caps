@@ -12,15 +12,15 @@ yarn dev # launch dev server
 npx prisma studio # launch DB admin panel
 ```
 
-## Setup the NFT
+## Setup the Token
 
 ```bash
 spl-token create-token --decimals 0
-# Creating token AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8
-spl-token create-account AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8
-spl-token mint AEJKAaYxP1wY41nr6ZXRQChCLnKRvQG7ae8TEPTCQ4U8 500
+# Creating token 2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd
+spl-token create-account 2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd
+spl-token mint 2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd 500
+spl-token authorize 2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd mint --disable
 ```
-
 
 ## Migrate DB
 
