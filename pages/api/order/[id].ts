@@ -16,7 +16,7 @@ export default async function handle(req, res) {
   const { url, tokenProgramId, capMint }  = CFG[CFG.default];
   const web3 = new Connection(url, 'recent');
   const start = Date.now();
-  while (Date.now() - start < 100*1000) {
+  while (Date.now() - start < 300*1000) {
     const response = await web3.getSignatureStatus(txHash);
     if (response.value?.confirmations === null) {
       break;
