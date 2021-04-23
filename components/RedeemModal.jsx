@@ -69,6 +69,7 @@ export default function RedeemModal({ open, onClose }) {
           firstName,
           lastName,
           email,
+          owner: wallet.publicKey.toBase58()
         }),
       })
 

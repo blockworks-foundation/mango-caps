@@ -1,6 +1,7 @@
 import Head from 'next/head'
 
 import Logo from '../components/Logo'
+import ShipmentButton from  '../components/ShipmentButton'
 import StatsButton from  '../components/StatsButton'
 import WalletButton from  '../components/WalletButton'
 import BuyButton from  '../components/BuyButton'
@@ -60,6 +61,11 @@ export default function Home() {
         <div className="flex-initial">
           <CapCount />
         </div>
+        { /*
+        <div className="flex-initial">
+          <ShipmentButton />
+        </div>
+        */ }
         <div className="flex-initial">
           <StatsButton />
         </div>
