@@ -75,14 +75,14 @@ export function AccountsProvider({ children }) {
       wallet.publicKey,
       { programId: new PublicKey(config.tokenProgramId) });
 
-    accounts.value.forEach(a => cache.addAccount(a.pubkey, a.account));
+    accounts.value.filter(x => x.account.lamports > 0).forEach(a => cache.addAccount(a.pubkey, a.account));
 
     const _walletCapAccount = getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey);
     const _walletUsdAccount = getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey);
     setWalletCapAccount(_walletCapAccount);
     setWalletUsdAccount(_walletUsdAccount);
   };
-  
+
   useEffect(refreshWalletAccounts, [config, connection, connected, wallet]);
 
   function subscribeToAccount(account, set) {
@@ -150,7 +150,7 @@ export function useMint(key) {
       }
     });
     return () => {
-      connection.removeAccountChangeListener(id); 
+      connection.removeAccountChangeListener(id);
     };
   }, [connection, key]);
 
