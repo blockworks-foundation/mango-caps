@@ -5,7 +5,7 @@ import { Account, clusterApiUrl, Connection, Transaction, TransactionInstruction
 export const CFG = {
   default: "mainnet-beta",
   "mainnet-beta": {
-    url: "https://solana-api.projectserum.com/",
+    url: "https://mango.rpcpool.com/",
     swapProgramId: "9bohspFveydu5Wg9Pm4mcLotLE2eBYMZ17G1aJ6ooqk1",
     tokenProgramId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
     capMint: "2prC8tcVsXwVJAinhxd2zeMeWMWaVyzPoQeLKyDZRFKd",
