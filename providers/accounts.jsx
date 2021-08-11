@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   PublicKey
 } from '@solana/web3.js';
+import * as BufferLayout from "buffer-layout";
 
 import { useConnection } from './connection';
 import { usePool } from './pool';
@@ -73,9 +74,19 @@ export function AccountsProvider({ children }) {
 
     const accounts = await connection.getTokenAccountsByOwner(
       wallet.publicKey,
-      { programId: new PublicKey(config.tokenProgramId) });
+      { programId: new PublicKey(config.tokenProgramId) }
+    );
 
-    accounts.value.filter(x => x.account.lamports > 0).forEach(a => cache.addAccount(a.pubkey, a.account));
+    // Just hack this in to parse amount from account with minimal other code changes
+    const ACCOUNT_LAYOUT = BufferLayout.struct([
+      BufferLayout.blob(64),
+      BufferLayout.nu64("amount"),
+      BufferLayout.blob(93),
+    ]);
+
+    accounts.value
+      .filter((x) => ACCOUNT_LAYOUT.decode(x.account.data).amount > 0)
+      .forEach((a) => cache.addAccount(a.pubkey, a.account));
 
     const _walletCapAccount = getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey);
     const _walletUsdAccount = getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey);
