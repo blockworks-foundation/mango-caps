@@ -213,7 +213,7 @@ export default function RedeemModal({ open, onClose }) {
               }}
             >
               {loadingAccounts && "⏳ (loading) "}
-              {wallet && connected ? "Redeem" : "Connect Wallet"}
+              {wallet && connected ? "🔥 token to redeem 🧢" : "Connect Wallet"}
             </Button>
           </div>
           {redeeming && !approved ? (
