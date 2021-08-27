@@ -52,14 +52,14 @@ export function WalletProvider({ children }) {
       setPubkey(keyToDisplay);
       notify({
         message: "Wallet update",
-        description: "Connected to newWallet " + keyToDisplay,
+        description: "Connected to wallet " + keyToDisplay,
       });
     });
     newWallet.on("disconnect", () => {
       setConnected(false);
       notify({
         message: "Wallet update",
-        description: "Disconnected from newWallet",
+        description: "Disconnected from wallet",
       });
     });
     setWallet(newWallet);
