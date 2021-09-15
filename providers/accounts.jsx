@@ -4,7 +4,7 @@ import {
 } from '@solana/web3.js';
 import * as BufferLayout from "buffer-layout";
 
-import { useConnection } from './connection';
+import { CFG, useConnection } from './connection';
 import { usePool } from './pool';
 import { useWallet } from './wallet';
 import { cache, getCachedAccountByMintAndOwner } from '../lib/pool';
@@ -19,12 +19,14 @@ export function AccountsProvider({ children }) {
   const { pool } = usePool();
   const { connected, wallet } = useWallet();
 
+  const mintCapAccount = useMint(config.capMint);
+  const [escrowCapAccount, setEscrowCapAccount] = useState();
   const [poolCapAccount, setPoolCapAccount] = useState();
   const [poolUsdAccount, setPoolUsdAccount] = useState();
   const [walletCapAccount, setWalletCapAccount] = useState();
-  const mintCapAccount = useMint(config.capMint);
   const [walletUsdAccount, setWalletUsdAccount] = useState();
 
+  const [escrowCapBalance, setEscrowCapBalance] = useState(0);
   const [poolCapBalance, setPoolCapBalance] = useState(0);
   const [poolUsdBalance, setPoolUsdBalance] = useState(0);
   const [walletCapBalance, setWalletCapBalance] = useState(0);
@@ -44,10 +46,23 @@ export function AccountsProvider({ children }) {
     }
   }
 
+  useEffect(() => refreshBalance(escrowCapAccount, setEscrowCapBalance), [connection, escrowCapAccount]);
   useEffect(() => refreshBalance(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
   useEffect(() => refreshBalance(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
   useEffect(() => refreshBalance(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
   useEffect(() => refreshBalance(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
+
+
+  const refreshEscrowCapAccount = async () => {
+    if (connection) {
+      const capAccount = await cache.queryAccount(
+        connection,
+        CFG[CFG.default].capVault
+      );
+      setEscrowCapAccount(capAccount);
+    }
+  }
+  useEffect(refreshEscrowCapAccount, [connection]);
 
   const refreshPoolAccounts = async () => {
     if (connection && pool) {
@@ -108,6 +123,7 @@ export function AccountsProvider({ children }) {
     }
   }
 
+  useEffect(() => subscribeToAccount(escrowCapAccount, setEscrowCapBalance), [connection, escrowCapAccount]);
   useEffect(() => subscribeToAccount(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
   useEffect(() => subscribeToAccount(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
   useEffect(() => subscribeToAccount(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
@@ -117,11 +133,13 @@ export function AccountsProvider({ children }) {
   return (
     <AccountsContext.Provider
       value={{
+        escrowCapAccount,
         poolCapAccount,
         poolUsdAccount,
         walletCapAccount,
         walletUsdAccount,
         mintCapAccount,
+        escrowCapBalance,
         poolCapBalance,
         poolUsdBalance,
         walletCapBalance,

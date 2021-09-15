@@ -29,10 +29,11 @@ const Button = styled.button`
 export default function StatsButton() {
 
   const { config } = useConnection();
-  const { mintCapAccount } = useAccounts();
+  const { escrowCapBalance, mintCapAccount } = useAccounts();
   const [isOpen, setIsOpen] = useState(false)
 
-  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
+  const mintSupply = mintCapAccount?.supply?.toNumber()
+  const redeemed = mintSupply ? config.capAmount - mintSupply + escrowCapBalance : 0
 
 
   return (

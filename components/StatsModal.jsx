@@ -7,12 +7,13 @@ import { useConnection } from '../providers/connection'
 export default function StatsModal({open, onClose}) {
 
   const { config } = useConnection();
-  const { mintCapAccount, poolCapAccount, poolCapBalance } = useAccounts();
+  const { mintCapAccount, escrowCapBalance, poolCapBalance } = useAccounts();
 
   if (!open) return null
 
   const initial = config.capAmount;
-  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
+  const mintSupply = mintCapAccount?.supply?.toNumber()
+  const redeemed = mintSupply ? config.capAmount - mintSupply + escrowCapBalance : 0
 
   return (
 

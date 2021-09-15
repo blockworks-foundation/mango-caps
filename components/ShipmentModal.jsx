@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { useAccounts } from '../providers/accounts'
-import { useConnection } from '../providers/connection'
-
 export default function ShipmentModal({owner, open, onClose}) {
-
-  const { config } = useConnection();
-  const { mintCapAccount, poolCapAccount, poolCapBalance } = useAccounts();
 
   const [shipments, setShipments] = useState([]);
   useEffect(async () => {
@@ -24,9 +18,6 @@ export default function ShipmentModal({owner, open, onClose}) {
   }, [owner]);
 
   if (!open) return null;
-
-  const initial = config.capAmount;
-  const redeemed = config.capAmount - (mintCapAccount?.supply?.toNumber() || config.capAmount);
 
   return (
 
