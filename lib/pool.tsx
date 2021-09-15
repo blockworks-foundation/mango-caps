@@ -12,12 +12,13 @@ import {
   MintInfo,
   MintLayout,
   AccountLayout,
-  AccountInfo as TokenAccountInfo
+  AccountInfo as TokenAccountInfo,
 } from "@solana/spl-token";
 import { Numberu64 } from "@solana/spl-token-swap";
 import * as BufferLayout from "buffer-layout";
 import { sendTransaction } from "./transaction";
-import BN from 'bn.js';
+import BN from "bn.js";
+import { CFG } from "../providers/connection";
 
 const notify = console.log;
 
@@ -128,8 +129,8 @@ export const programIdsTokenSwapLayoutLegacyV0 = BufferLayout.struct([
   uint64("feesDenominator"),
 ]);
 
-export const TokenSwapLayoutV1: typeof BufferLayout.Structure = BufferLayout.struct(
-  [
+export const TokenSwapLayoutV1: typeof BufferLayout.Structure =
+  BufferLayout.struct([
     BufferLayout.u8("isInitialized"),
     BufferLayout.u8("nonce"),
     publicKey("tokenProgramId"),
@@ -147,8 +148,7 @@ export const TokenSwapLayoutV1: typeof BufferLayout.Structure = BufferLayout.str
     uint64("ownerWithdrawFeeNumerator"),
     uint64("ownerWithdrawFeeDenominator"),
     BufferLayout.blob(16, "padding"),
-  ]
-);
+  ]);
 
 const CURVE_NODE = BufferLayout.union(
   BufferLayout.u8(),
@@ -168,8 +168,8 @@ CURVE_NODE.addVariant(
   "offset"
 );
 
-export const TokenSwapLayout: typeof BufferLayout.Structure = BufferLayout.struct(
-  [
+export const TokenSwapLayout: typeof BufferLayout.Structure =
+  BufferLayout.struct([
     BufferLayout.u8("version"),
     BufferLayout.u8("isInitialized"),
     BufferLayout.u8("nonce"),
@@ -182,8 +182,7 @@ export const TokenSwapLayout: typeof BufferLayout.Structure = BufferLayout.struc
     publicKey("feeAccount"),
     FEE_LAYOUT,
     CURVE_NODE,
-  ]
-);
+  ]);
 
 export const createInitSwapInstruction = (
   tokenSwapAccount: Account,
@@ -249,7 +248,7 @@ export const createInitSwapInstruction = (
       },
       data
     );
-    console.log('initSwap', {fees, rest});
+    console.log("initSwap", { fees, rest });
     data = data.slice(0, encodeLength);
   } else {
     const commandDataLayout = BufferLayout.struct([
@@ -621,7 +620,6 @@ export const swapInstruction = (
   });
 };
 
-
 const LIQUIDITY_TOKEN_PRECISION = 8;
 
 export const LIQUIDITY_PROVIDER_FEE = 0.003;
@@ -632,43 +630,51 @@ export const isLatest = (swap: AccountInfo<Buffer>) => {
   return swap.data.length === TokenSwapLayout.span;
 };
 
-export const MEMO_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+export const MEMO_ID = new PublicKey(
+  "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+);
 
 export async function redeem(
   connection: Connection,
   wallet: any,
-  account: TokenAccount, 
-  amount: number, 
+  account: TokenAccount,
+  amount: number,
   id: string,
-  programIds: ProgramIds) {
+  programIds: ProgramIds
+) {
   const instructions: TransactionInstruction[] = [];
   const cleanupInstructions: TransactionInstruction[] = [];
   const signers: Account[] = [];
 
   const transferAuthority = approveAmount(
-    instructions, 
-    cleanupInstructions, 
-    account.pubkey, 
-    wallet.publicKey, 
-    amount, 
+    instructions,
+    cleanupInstructions,
+    account.pubkey,
+    wallet.publicKey,
+    amount,
     programIds
   );
 
   signers.push(transferAuthority);
 
-  instructions.push(Token.createBurnInstruction(
-    programIds.token,
-    account.info.mint, 
-    account.pubkey, 
-    transferAuthority.publicKey,
-    [],
-    amount));
+  instructions.push(
+    Token.createTransferInstruction(
+      programIds.token,
+      account.pubkey,
+      new PublicKey(CFG[CFG.default].capVault),
+      transferAuthority.publicKey,
+      [],
+      amount
+    )
+  );
 
-  instructions.push(new TransactionInstruction({
-    keys: [],
-    programId: MEMO_ID,
-    data: Buffer.from(`🥭🧢#${id}`),
-  }))
+  instructions.push(
+    new TransactionInstruction({
+      keys: [],
+      programId: MEMO_ID,
+      data: Buffer.from(`🥭🧢#${id}`),
+    })
+  );
 
   let tx = await sendTransaction(
     connection,
@@ -694,7 +700,7 @@ export async function swap(
   components: LiquidityComponent[],
   programIds: ProgramIds,
   hostFeeAddress?: PublicKey,
-  pool?: PoolInfo,
+  pool?: PoolInfo
 ) {
   if (!pool || !components[0].account) {
     notify({
@@ -805,12 +811,16 @@ export async function swap(
     )
   );
 
-  console.log({amountIn, minAmountOut, accounts:[
-    fromAccount.toString(),
-    holdingA.toString(),
-    holdingB.toString(),
-    toAccount.toString(),
-  ]})
+  console.log({
+    amountIn,
+    minAmountOut,
+    accounts: [
+      fromAccount.toString(),
+      holdingA.toString(),
+      holdingB.toString(),
+      toAccount.toString(),
+    ],
+  });
 
   let tx = await sendTransaction(
     connection,
@@ -824,7 +834,7 @@ export async function swap(
     type: "success",
     description: `Transaction - ${tx}`,
   });
-};
+}
 
 const toPoolInfo = (item: any, program: PublicKey) => {
   const mint = new PublicKey(item.data.tokenPool);
@@ -842,7 +852,6 @@ const toPoolInfo = (item: any, program: PublicKey) => {
     raw: item,
   } as PoolInfo;
 };
-
 
 // Allow for this much price movement in the pool before adding liquidity to the pool aborts
 const SLIPPAGE = 0.005;
@@ -906,10 +915,9 @@ function estimateProceedsFromInput(
   inputQuantityInPool: BN,
   inputAmount: BN
 ): BN {
-  const result = proceedsQuantityInPool.mul(inputAmount).div(inputQuantityInPool.add(inputAmount));
-
-  //const r2 = (proceedsQuantityInPool * inputAmount) / (inputQuantityInPool + inputAmount);
-  //console.log(`ProceedsFromInput ${r2} ${result.toString()} ${inputAmount.toString()} ${proceedsQuantityInPool.toString()} ${inputQuantityInPool.toString()}`);
+  const result = proceedsQuantityInPool
+    .mul(inputAmount)
+    .div(inputQuantityInPool.add(inputAmount));
 
   return result;
 }
@@ -922,11 +930,9 @@ function estimateInputFromProceeds(
   if (proceedsAmount.gte(proceedsQuantityInPool)) {
     return "Not possible";
   }
-  const result = inputQuantityInPool.mul(proceedsAmount).div(
-    (proceedsQuantityInPool.sub(proceedsAmount)));
-
-  //const r2 = (inputQuantityInPool * proceedsAmount) / (proceedsQuantityInPool - proceedsAmount);
-  //console.log(`InputFromProceeds ${r2} ${result.toString()} ${proceedsAmount.toString()} ${inputQuantityInPool.toString()} ${proceedsQuantityInPool.toString()}`);
+  const result = inputQuantityInPool
+    .mul(proceedsAmount)
+    .div(proceedsQuantityInPool.sub(proceedsAmount));
 
   return result;
 }
@@ -992,12 +998,15 @@ export async function calculateDependentAmount(
 
   const constantPrice = pool.raw?.data?.curve?.constantPrice;
   if (constantPrice) {
-    depAdjustedAmount = new BN(amount).mul(depPrecision).div(new BN(constantPrice.token_b_price));
+    depAdjustedAmount = new BN(amount)
+      .mul(depPrecision)
+      .div(new BN(constantPrice.token_b_price));
   } else {
     switch (+op) {
       case PoolOperation.Add:
-        depAdjustedAmount =
-          (depBasketQuantity.div(indBasketQuantity)).mul(indAdjustedAmount);
+        depAdjustedAmount = depBasketQuantity
+          .div(indBasketQuantity)
+          .mul(indAdjustedAmount);
         break;
       case PoolOperation.SwapGivenProceeds:
         depAdjustedAmount = estimateInputFromProceeds(
@@ -1023,10 +1032,13 @@ export async function calculateDependentAmount(
     return undefined;
   }
 
-  const result = depAdjustedAmount.div(depPrecision).toNumber() +
-                 depAdjustedAmount.mod(depPrecision).toNumber() / depPrecision.toNumber();
+  const result =
+    depAdjustedAmount.div(depPrecision).toNumber() +
+    depAdjustedAmount.mod(depPrecision).toNumber() / depPrecision.toNumber();
 
-  console.log(`estimate ${result} ${depBasketQuantity}->${depAdjustedAmount}/${depPrecision}`);
+  console.log(
+    `estimate ${result} ${depBasketQuantity}->${depAdjustedAmount}/${depPrecision}`
+  );
   return result;
 }
 
@@ -1222,7 +1234,6 @@ export async function addLiquidityNewPool(
     )
   );
 
-
   // All instructions didn't fit in single transaction
   // initialize and provide inital liquidity to swap in 2nd (this prevents loss of funds)
   tx = await sendTransaction(
@@ -1350,7 +1361,6 @@ function createSplAccount(
   return account;
 }
 
-
 export const cache = {
   query: async (
     connection: Connection,
@@ -1445,7 +1455,10 @@ export const cache = {
 
     return query;
   },
-  refreshAccount: async (connection: Connection, pubKey: string | PublicKey) => {
+  refreshAccount: async (
+    connection: Connection,
+    pubKey: string | PublicKey
+  ) => {
     let id: PublicKey;
     if (typeof pubKey === "string") {
       id = new PublicKey(pubKey);
@@ -1460,7 +1473,6 @@ export const cache = {
     }) as Promise<TokenAccount>;
 
     return query;
-
   },
   addAccount: (pubKey: PublicKey, obj: AccountInfo<Buffer>) => {
     const account = tokenAccountFactory(pubKey, obj);
@@ -1544,8 +1556,9 @@ export const getCachedAccount = (
 
 export const getCachedAccountByMintAndOwner = (
   mint: string,
-  owner: PublicKey,
-) => getCachedAccount(
+  owner: PublicKey
+) =>
+  getCachedAccount(
     (acc) =>
       acc.info.mint.toBase58() === mint &&
       acc.info.owner.toBase58() === owner.toBase58()
@@ -1579,7 +1592,10 @@ const accountsCache = new Map<string, TokenAccount>();
 const pendingCalls = new Map<string, Promise<ParsedAccountBase>>();
 const genericCache = new Map<string, ParsedAccountBase>();
 
-export function tokenAccountFactory(pubKey: PublicKey, info: AccountInfo<Buffer>) {
+export function tokenAccountFactory(
+  pubKey: PublicKey,
+  info: AccountInfo<Buffer>
+) {
   const buffer = Buffer.from(info.data);
 
   const data = deserializeAccount(buffer);
@@ -1594,8 +1610,6 @@ export function tokenAccountFactory(pubKey: PublicKey, info: AccountInfo<Buffer>
 
   return details;
 }
-
-
 
 export interface ParsedAccountBase {
   pubkey: PublicKey;
@@ -1713,4 +1727,3 @@ const deserializeMint = (data: Buffer) => {
 function useConnection() {
   throw new Error("Function not implemented.");
 }
-

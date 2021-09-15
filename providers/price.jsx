@@ -20,7 +20,6 @@ export function PriceProvider({ children }) {
 
   useEffect(async () => {
     if (connection && pool) {
-      console.log("Buy.price")
       const newPrice = await calculateDependentAmount(
         connection,
         config.capMint,

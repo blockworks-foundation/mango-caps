@@ -82,15 +82,16 @@ export default function RedeemModal({ open, onClose }) {
 
       const txHash = await redeem(connection, wallet, walletCapAccount, amountToSell, order.id.toString(), programIds)
       setApproved(true)
-      await fetch(`/api/order/${order.id}`, {
+      const response = await fetch(`/api/order/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ txHash }),
+        body: JSON.stringify({ txHash, amount: amountToSell }),
       })
       onClose()
+      alert(response.status == 200 ? 'Order received. Awesome 🙌' : 'Error. Please reach out on discord.')
     } catch (e) {
       console.error(e)
-      alert(`Error: ${e}`)
+      alert(`Error. Please reach out on discord.`)
     } finally {
       setRedeeming(false)
     }

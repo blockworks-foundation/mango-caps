@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react"
 import { Account, clusterApiUrl, Connection, Transaction, TransactionInstruction } from "@solana/web3.js"
 
 export const CFG = {
-  default: "mainnet-beta",
+  default: "devnet",
   "mainnet-beta": {
     url: "https://mango.rpcpool.com/",
     swapProgramId: "9bohspFveydu5Wg9Pm4mcLotLE2eBYMZ17G1aJ6ooqk1",
@@ -12,15 +12,17 @@ export const CFG = {
     usdMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     usdDecimals: 6,
     capAmount: 500,
+    capVault: ""
   },
   devnet: {
-    url: clusterApiUrl("devnet"),
+    url: "https://mango.devnet.rpcpool.com/",
     swapProgramId: "4agVeHTmm3Uis4Wt84NhrQXpEaV1Sb1HZmFvnkMQzDi4",
     tokenProgramId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
     capMint: "3qAPiwUSGuqkwkvaLXkKxaoSXr9SpQDMR2xgoPQTgW7j",
     usdMint: "FUneZen4boSp7x3LJ1qYSd4grs2HCNQirot5pexTcBpX",
     usdDecimals: 6,
     capAmount: 500,
+    capVault: "Gwx26zHJjam8RT6ph4gEUhmP7vydv8Vn15WBhNBTU8C9"
   },
 }
 

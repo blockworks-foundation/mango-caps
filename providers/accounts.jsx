@@ -26,9 +26,9 @@ export function AccountsProvider({ children }) {
   const [walletUsdAccount, setWalletUsdAccount] = useState();
 
   const [poolCapBalance, setPoolCapBalance] = useState(0);
-  //const [poolUsdBalance, setPoolUsdBalance] = useState(0);
+  const [poolUsdBalance, setPoolUsdBalance] = useState(0);
   const [walletCapBalance, setWalletCapBalance] = useState(0);
-  //const [walletUsdBalance, setWalletUsdBalance] = useState(0);
+  const [walletUsdBalance, setWalletUsdBalance] = useState(0);
 
   async function refreshBalance(account, set) {
     if (account) {
@@ -36,6 +36,8 @@ export function AccountsProvider({ children }) {
         connection,
         account.pubkey
       );
+
+      console.log('refreshBalance', account.pubkey.toString(), _account.info.amount.toNumber());
       set(_account.info.amount.toNumber());
     } else {
       set(0);
@@ -43,9 +45,9 @@ export function AccountsProvider({ children }) {
   }
 
   useEffect(() => refreshBalance(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
-  //useEffect(() => refreshBalance(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
+  useEffect(() => refreshBalance(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
   useEffect(() => refreshBalance(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
-  //useEffect(() => refreshBalance(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
+  useEffect(() => refreshBalance(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
 
   const refreshPoolAccounts = async () => {
     if (connection && pool) {
@@ -107,9 +109,9 @@ export function AccountsProvider({ children }) {
   }
 
   useEffect(() => subscribeToAccount(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
-  //useEffect(() => subscribeToAccount(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
+  useEffect(() => subscribeToAccount(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
   useEffect(() => subscribeToAccount(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
-  //useEffect(() => subscribeToAccount(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
+  useEffect(() => subscribeToAccount(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
 
 
   return (
@@ -121,9 +123,9 @@ export function AccountsProvider({ children }) {
         walletUsdAccount,
         mintCapAccount,
         poolCapBalance,
-        //poolUsdBalance,
+        poolUsdBalance,
         walletCapBalance,
-        //walletUsdBalance,
+        walletUsdBalance,
         refreshWalletAccounts
       }}
     >

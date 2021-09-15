@@ -1,33 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  shadowDatabaseUrl = env("HEROKU_POSTGRESQL_AQUA_URL")
 }
 
 model Orders {
-  id            Int       @default(autoincrement()) @id
-  firstName     String
-  lastName      String
-  email         String
-  address1      String
-  address2      String?
-  city          String
-  province      String?
-  postalCode    String?
-  country       String
-  style         String
-  owner         String?
-  txHash        String?   @map(name: "tx_hash")
-  fullfilled    Boolean   @default(false)
-  trackingUrl   String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  @@map(name: "orders")
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  style       String
+  txHash      String?  @map("tx_hash")
+  fullfilled  Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  email       String
+  address1    String
+  address2    String?
+  city        String
+  postalCode  String?
+  country     String
+  province    String?
+  trackingUrl String?
+  owner       String?
+  amount      Int?
+  @@map("orders")
 }
