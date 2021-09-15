@@ -1,6 +1,6 @@
 
 
-export default function DisclaimerPop() {
+export default function DisclaimerPop({ onAccept }) {
 
   return (
     <div className="bg-white shadow:md sm:rounded-xl">
@@ -13,6 +13,7 @@ export default function DisclaimerPop() {
           <button
             type="button"
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-yellow-800 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+            onClick={onAccept}
           >
             Burn it 🔥
           </button>
