@@ -97,7 +97,7 @@ export default function RedeemModal({ open, onClose }) {
     }
   }
 
-  const loadingAccounts = connected && !(walletUsdAccount && walletCapAccount && pool && !redeeming)
+  const loadingAccounts = connected && !(walletCapAccount && pool && !redeeming)
   // TODO: add google autocomplete?: https://www.tracylum.com/blog/2017-05-20-autocomplete-an-address-with-a-react-form/
 
   return (
