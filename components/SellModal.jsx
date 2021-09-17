@@ -64,8 +64,6 @@ export default function SellModal({open, onClose}) {
     }
   };
 
-  const loadingAccounts = connected && !(walletUsdAccount && walletCapAccount && pool && !selling)
-
   return (
     <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
@@ -113,11 +111,13 @@ export default function SellModal({open, onClose}) {
         marginTop:"-9px",
       }}
     /></Price>
-          <Button disabled={loadingAccounts} onClick={handleClick} style={{
+          <Button disabled={selling || !walletUsdAccount} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
-            opacity: loadingAccounts ? "50%" : "100%"}}>
-            { loadingAccounts && "⏳ (confirm in wallet) " }
-            { !loadingAccounts && (wallet && connected ? "Sell" : "Connect Wallet" ) }
+            opacity: selling || !walletUsdAccount ? "50%" : "100%"}}>
+          {selling && "⏳ (confirm in wallet) "}
+          {!selling && !(wallet && connected) && "Connect Wallet"}
+          {!selling && wallet && connected && !walletUsdAccount && "You need USDC in your wallet"}
+          {!selling && wallet && connected && walletUsdAccount && "Sell"}
           </Button>  
           <br />  
           <button onClick={onClose}>Close</button>

@@ -22,7 +22,7 @@ export default function BuyModal({ open, onClose }) {
   const { pool } = usePool()
   const { amountToBuy, setAmountToBuy, amountAvailable, totalSupply, price, formattedPrice } = usePrice()
 
-  const scalperLimit = Math.max(0, 5 - walletCapBalance)
+  const scalperLimit = 500//Math.max(0, 5 - walletCapBalance)
   const hasReachedScalperLimit = scalperLimit == 0
 
   useEffect(() => {
@@ -75,6 +75,7 @@ export default function BuyModal({ open, onClose }) {
   }
 
   const loadingAccounts = connected && !(walletUsdAccount && pool && !buying)
+  console.log('buy', {loadingAccounts, connected, walletUsdAccount, pool, buying})
 
   return (
     <>
@@ -125,16 +126,19 @@ export default function BuyModal({ open, onClose }) {
           />
         </Price>
         <Button
-          disabled={loadingAccounts || hasReachedScalperLimit}
+          disabled={buying || hasReachedScalperLimit || !walletUsdAccount}
           onClick={handleClick}
           style={{
             background: connected ? bgConnected : bgDisconnected,
-            opacity: loadingAccounts || hasReachedScalperLimit ? "50%" : "100%",
+            opacity: buying || hasReachedScalperLimit || !walletUsdAccount ? "50%" : "100%",
           }}
         >
-          {loadingAccounts && "⏳ (confirm in wallet) "}
-          {!loadingAccounts && !(wallet && connected) && "Connect Wallet"}
-          {!loadingAccounts && wallet && connected && (hasReachedScalperLimit ? "You bought too many caps! 😅" : "Buy")}
+          {buying && "⏳ (confirm in wallet) "}
+          {!buying && !(wallet && connected) && "Connect Wallet"}
+          {!buying && wallet && connected && hasReachedScalperLimit && "You bought too many caps! 😅"}
+          {!buying && wallet && connected && !hasReachedScalperLimit && !walletUsdAccount && "You need USDC in your wallet"}
+          {!buying && wallet && connected && !hasReachedScalperLimit && walletUsdAccount && "Buy"}
+
         </Button>
         <br />
         <button onClick={onClose}>Close</button>
