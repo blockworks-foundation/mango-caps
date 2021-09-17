@@ -163,7 +163,7 @@ const CardWrapper = styled.div`
   box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   position: fixed;
   width: 370px;
-  top: 400px;
+  top: 300px;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 20px;
@@ -182,7 +182,7 @@ const InfoCard = styled.div`
   position: fixed;
   width: 370px;
   height: auto;
-  top: 710px;
+  top: 600px;
   left: 50%;
   transform: translate(-50%, -50%);
   background: #efedf9;
