@@ -4,7 +4,7 @@ export default function DisclaimerPop({ onAccept }) {
 
   return (
     <div className="absolute inset-0 bg-black bg-opacity-70 h-screen flex flex-col py-40">
-    <div className="bg-white shadow:md sm:rounded-xl w-1/2 mx-auto">
+    <div className=" bg-white shadow:md sm:rounded-xl w-1/2 mx-auto">
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg font-bold leading-6 text-gray-900">Are you sure you want to 🔥 your MCAP token?</h3>
         <div className="mt-2 max-w-xl text-sm text-gray-500">
