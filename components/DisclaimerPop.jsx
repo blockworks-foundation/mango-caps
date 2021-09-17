@@ -8,7 +8,7 @@ export default function DisclaimerPop({ onAccept }) {
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg font-bold leading-6 text-gray-900">Are you sure you want to 🔥 your MCAP token?</h3>
         <div className="mt-2 max-w-xl text-sm text-gray-500">
-          <p>By burning the token you understand that you are withdrawling your claim to any associated value awarded by the holding the token.</p>
+          <p>By burning the token you understand that you are withdrawling your claim to any associated value awarded by the bonding curve.</p>
         </div>
         <div className="mt-5">
           <button

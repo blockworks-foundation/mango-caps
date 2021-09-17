@@ -26,13 +26,12 @@ const Page = styled.div`
 const Content = styled.div`
   width: calc(100vw - 32px);
   max-width: 375px;
-  margin-top: 50px;
+  margin-top: 50px
 `
 
 const BottomBar = styled.div`
   width: 100%;
   height: 10px;
-  position:;
   bottom: 0;
   background: linear-gradient(84deg, #E4642C 1.84%, #FECA1A 43.54%, #AFD803 83.07%, #AFD803 103.65%);
 `
