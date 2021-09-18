@@ -80,6 +80,7 @@ export default function BuyModal({ open, onClose }) {
   return (
     <>
       <OVERLAY_STYLES> </OVERLAY_STYLES>
+      <BuyWrapper>
       <CardWrapper>
         <FullWidth>
           <Title>Mango Market Caps Edition 0</Title>
@@ -143,6 +144,7 @@ export default function BuyModal({ open, onClose }) {
         <br />
         <button onClick={onClose}>Close</button>
       </InfoCard>
+      </BuyWrapper>
     </>
   )
 }
@@ -160,7 +162,17 @@ const OVERLAY_STYLES = styled.div`
 const FullWidth = styled.div`
   width: 100%;
 `
-
+const BuyWrapper = styled.div`
+  display: flex;
+  position: absolute;
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  border-radius: 20px;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 const CardWrapper = styled.div`
   background: #000000;
   background: radial-gradient(132.71% 110% at 1.86% 1.91%, #e54033 0%, #feca1a 51.79%, #afd803 83.48%);
