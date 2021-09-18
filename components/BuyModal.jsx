@@ -76,9 +76,6 @@ export default function BuyModal({ open, onClose }) {
     }
   }
 
-  const loadingAccounts = connected && !(walletUsdAccount && pool && !buying)
-  console.log('buy', {loadingAccounts, connected, walletUsdAccount, pool, buying})
-
   return (
     <>
       <OVERLAY_STYLES> </OVERLAY_STYLES>
