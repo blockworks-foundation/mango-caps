@@ -10,7 +10,7 @@ const PriceContext = React.createContext()
 export function PriceProvider({ children }) {
   const { connection, config } = useConnection()
   const { pool } = usePool()
-  const { poolCapAccount, poolCapBalance, mintCapAccount } = useAccounts()
+  const { poolCapBalance, poolUSDBalance, mintCapAccount } = useAccounts()
 
   const amountAvailable = poolCapBalance
   const [amountToBuy, setAmountToBuy] = useState(1)
@@ -30,7 +30,7 @@ export function PriceProvider({ children }) {
       setPrice(newPrice)
       setFormattedPrice(newPrice.toFixed(2))
     }
-  }, [amountToBuy, connection, pool, poolCapBalance])
+  }, [amountToBuy, connection, pool, poolCapBalance, poolUSDBalance])
 
   return (
     <PriceContext.Provider

@@ -4,11 +4,11 @@ export default function DisclaimerPop({ onAccept }) {
 
   return (
     <div className="absolute inset-0 bg-black bg-opacity-70 h-screen flex flex-col py-40">
-    <div className=" bg-white shadow:md sm:rounded-xl w-1/2 mx-auto">
+    <div className=" bg-white shadow:md sm:rounded-xl w-1/3 mx-auto">
       <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg font-bold leading-6 text-gray-900">Are you sure you want to 🔥 your MCAP token?</h3>
+        <h3 className="text-lg font-bold leading-6 text-gray-900">Are you sure you want to redeem your MCAP token?</h3>
         <div className="mt-2 max-w-xl text-sm text-gray-500">
-          <p>By burning the token you understand that you are withdrawling your claim to any associated value awarded by the bonding curve.</p>
+          <p>Your digital token will be burned, this means it will be irrevocably lost. You will receive the real physical 🧢 though.</p>
         </div>
         <div className="mt-5">
           <button

@@ -23,7 +23,7 @@ export default function SellModal({open, onClose}) {
 
   const { connection, config } = useConnection();
   const { wallet, connected } = useWallet();
-  const { walletCapAccount, walletUsdAccount } = useAccounts();
+  const { walletCapAccount, walletUsdAccount, refreshWalletAccounts } = useAccounts();
   const { pool } = usePool();
   const {
     amountToSell,
@@ -57,6 +57,10 @@ export default function SellModal({open, onClose}) {
       console.log({connection, wallet, components, slippage, programIds, undefined, pool});
 
       await swap(connection, wallet, components, programIds, undefined, pool);
+
+      await refreshWalletAccounts()
+
+      setAmountToSell(0)
     } catch (e) {
       console.error(e);
     } finally {

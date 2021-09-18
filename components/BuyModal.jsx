@@ -67,6 +67,8 @@ export default function BuyModal({ open, onClose }) {
 
       // refresh wallet accounts in-case we just created a new cap account for this user
       await refreshWalletAccounts()
+
+      setAmountToBuy(0)
     } catch (e) {
       console.error(e)
     } finally {
