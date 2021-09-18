@@ -67,6 +67,7 @@ export default function SellModal({open, onClose}) {
   return (
     <>
         <OVERLAY_STYLES> </OVERLAY_STYLES>
+        <SellWrapper>
         <CardWrapper>
         <Title>Mango Market Caps Edition 0</Title>
           <SubTitle>$MCAPS</SubTitle>
@@ -122,6 +123,7 @@ export default function SellModal({open, onClose}) {
           <br />  
           <button onClick={onClose}>Close</button>
         </InfoCard>
+        </SellWrapper>
         </>
   )
 }
@@ -139,6 +141,17 @@ const OVERLAY_STYLES = styled.div`
 const FullWidth = styled.div`
   width: 100%;
 `
+const SellWrapper = styled.div`
+  display: flex;
+  position: absolute;
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  border-radius: 20px;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 
 const CardWrapper = styled.div`
   background: #000000;
@@ -146,7 +159,7 @@ const CardWrapper = styled.div`
   box-shadow: 0px 5px 15px rgba(229, 64, 51, 0.19);
   position: fixed;
   width: 370px;
-  top: 400px;
+  top: 300px;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 20px; 
@@ -164,7 +177,7 @@ const InfoCard = styled.div`
   position: fixed;
   width: 370px;
   height: auto;
-  top: 710px;
+  top: 600px;
   left: 50%;
   transform: translate(-50%, -50%);
   background: #EFEDF9;

@@ -255,6 +255,7 @@ const RedeemWrapper = styled.div`
   position: absolute;
   width: auto;
   height: auto;
+  padding: 50px 0px;
   z-index: 1000;
   border-radius: 20px;
   top: 50%;
