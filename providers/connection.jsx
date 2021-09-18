@@ -12,7 +12,7 @@ export const CFG = {
     usdMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     usdDecimals: 6,
     capAmount: 500,
-    capVault: ""
+    capVault: "8ZDdz1BZs3y1PKCTzEBsD7h8dth7UaoVL6HT73xtmhuT"
   },
   devnet: {
     url: "https://mango.devnet.rpcpool.com/",

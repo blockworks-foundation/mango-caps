@@ -116,13 +116,13 @@ export default function SellModal({open, onClose}) {
         marginTop:"-9px",
       }}
     /></Price>
-          <Button disabled={selling || !walletUsdAccount} onClick={handleClick} style={{
+          <Button disabled={selling || !walletCapAccount} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
-            opacity: selling || !walletUsdAccount ? "50%" : "100%"}}>
+            opacity: selling || !walletCapAccount ? "50%" : "100%"}}>
           {selling && "⏳ (confirm in wallet) "}
           {!selling && !(wallet && connected) && "Connect Wallet"}
-          {!selling && wallet && connected && !walletUsdAccount && "You need USDC in your wallet"}
-          {!selling && wallet && connected && walletUsdAccount && "Sell"}
+          {!selling && wallet && connected && !walletCapAccount && "You need MCAPS in your wallet"}
+          {!selling && wallet && connected && walletCapAccount && "Sell"}
           </Button>  
           <br />  
           <button onClick={onClose}>Close</button>
