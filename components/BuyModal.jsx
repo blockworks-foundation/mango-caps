@@ -22,7 +22,7 @@ export default function BuyModal({ open, onClose }) {
   const { pool } = usePool()
   const { amountToBuy, setAmountToBuy, amountAvailable, totalSupply, price, formattedPrice } = usePrice()
 
-  const scalperLimit = 500//Math.max(0, 5 - walletCapBalance)
+  const scalperLimit = Math.max(0, 5 - walletCapBalance)
   const hasReachedScalperLimit = scalperLimit == 0
 
   useEffect(() => {
