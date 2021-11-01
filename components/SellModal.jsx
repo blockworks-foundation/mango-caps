@@ -116,9 +116,9 @@ export default function SellModal({open, onClose}) {
         marginTop:"-9px",
       }}
     /></Price>
-          <Button disabled={selling || !walletCapAccount} onClick={handleClick} style={{
+          <Button disabled={selling || (connected && !walletCapAccount)} onClick={handleClick} style={{
             background: connected ? bgConnected : bgDisconnected,
-            opacity: selling || !walletCapAccount ? "50%" : "100%"}}>
+            opacity: selling || (connected && !walletCapAccount) ? "50%" : "100%"}}>
           {selling && "⏳ (confirm in wallet) "}
           {!selling && !(wallet && connected) && "Connect Wallet"}
           {!selling && wallet && connected && !walletCapAccount && "You need MCAPS in your wallet"}

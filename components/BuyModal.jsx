@@ -126,11 +126,11 @@ export default function BuyModal({ open, onClose }) {
           />
         </Price>
         <Button
-          disabled={buying || hasReachedScalperLimit || !walletUsdAccount}
+          disabled={buying || hasReachedScalperLimit || (connected && !walletUsdAccount)}
           onClick={handleClick}
           style={{
             background: connected ? bgConnected : bgDisconnected,
-            opacity: buying || hasReachedScalperLimit || !walletUsdAccount ? "50%" : "100%",
+            opacity: buying || hasReachedScalperLimit || (connected && !walletUsdAccount) ? "50%" : "100%",
           }}
         >
           {buying && "⏳ (confirm in wallet) "}
