@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react"
 import { Account, clusterApiUrl, Connection, Transaction, TransactionInstruction } from "@solana/web3.js"
 
 export const CFG = {
-  default: "devnet",
+  default: "mainnet-beta",
   "mainnet-beta": {
     url: "https://mango.rpcpool.com/",
     swapProgramId: "9bohspFveydu5Wg9Pm4mcLotLE2eBYMZ17G1aJ6ooqk1",
