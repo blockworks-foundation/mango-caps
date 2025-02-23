@@ -18,18 +18,21 @@ export function PriceProvider({ children }) {
   const [price, setPrice] = useState(0)
   const [formattedPrice, setFormattedPrice] = useState("")
 
-  useEffect(async () => {
-    if (connection && pool) {
-      const newPrice = await calculateDependentAmount(
-        connection,
-        config.capMint,
-        amountToBuy,
-        pool,
-        PoolOperation.SwapGivenProceeds
-      )
-      setPrice(newPrice)
-      setFormattedPrice(newPrice.toFixed(2))
+  useEffect(() => {
+    const fetchPrice = async () => {
+      if (connection && pool) {
+        const newPrice = await calculateDependentAmount(
+          connection,
+          config.capMint,
+          amountToBuy,
+          pool,
+          PoolOperation.SwapGivenProceeds
+        )
+        setPrice(newPrice)
+        setFormattedPrice(newPrice.toFixed(2))
+      }
     }
+    fetchPrice()
   }, [amountToBuy, connection, pool, poolCapBalance, poolUSDBalance])
 
   return (
@@ -63,19 +66,22 @@ export function SellPriceProvider({ children }) {
   const [price, setPrice] = useState(0)
   const [formattedPrice, setFormattedPrice] = useState("")
 
-  useEffect(async () => {
-    if (connection && pool) {
-      console.log("Sell.price")
-      const newPrice = await calculateDependentAmount(
-        connection,
-        config.capMint,
-        amountToSell,
-        pool,
-        PoolOperation.SwapGivenInput
-      )
-      setPrice(newPrice)
-      setFormattedPrice(newPrice.toFixed(2))
+  useEffect(() => {
+    const fetchPrice = async () => {
+      if (connection && pool) {
+        console.log("Sell.price")
+        const newPrice = await calculateDependentAmount(
+          connection,
+          config.capMint,
+          amountToSell,
+          pool,
+          PoolOperation.SwapGivenInput
+        )
+        setPrice(newPrice)
+        setFormattedPrice(newPrice.toFixed(2))
+      }
     }
+    fetchPrice()
   }, [amountToSell, connection, pool, walletCapBalance])
 
   return (

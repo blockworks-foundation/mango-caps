@@ -1,69 +1,59 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React from "react"
+import styled from "styled-components"
 
-import { useAccounts } from '../providers/accounts'
-import { useConnection } from '../providers/connection'
+import { useAccounts } from "../providers/accounts"
+import { useConnection } from "../providers/connection"
 
-export default function StatsModal({open, onClose}) {
-
-  const { config } = useConnection();
-  const { mintCapAccount, escrowCapBalance, poolCapBalance } = useAccounts();
+export default function StatsModal({ open, onClose }) {
+  const { config } = useConnection()
+  const { mintCapAccount, escrowCapBalance, poolCapBalance } = useAccounts()
 
   if (!open) return null
 
-  const initial = config.capAmount;
+  const initial = config.capAmount
   const mintSupply = mintCapAccount?.supply?.toNumber()
   const redeemed = mintSupply ? config.capAmount - mintSupply + escrowCapBalance : 0
 
   return (
-
-        <>
-        <OVERLAY_STYLES> </OVERLAY_STYLES>
-        <CardWrapper>
+    <>
+      <OVERLAY_STYLES> </OVERLAY_STYLES>
+      <CardWrapper>
         <Title>$MCAPS Stats</Title>
         <br />
-          <Description>
-              <p>
-                <span>
-                  🧢&thinsp;
-                </span>
-                Initial $MCAPS
-              </p>
-              <p>{initial}</p>
-          </Description>
-          <Description>
-              <p>
-                <span>
-                  🔥&thinsp;
-                </span>
-                Redeemed $MCAPS
-              </p>
-              <p>{redeemed}</p>
-          </Description>
-          <Description>
-              <p>
-                <span>
-                  💦&thinsp;
-                </span>
-                Remaining $MCAPS
-              </p>
-              <p>{poolCapBalance}</p>
-          </Description>
-          <Shim />
-          <Text>
-          The price of MCAPS changes when tokens are bought and sold.
-          </Text>
+        <Description>
+          <p>
+            <span>🧢&thinsp;</span>
+            Initial $MCAPS
+          </p>
+          <p>{initial}</p>
+        </Description>
+        <Description>
+          <p>
+            <span>🔥&thinsp;</span>
+            Redeemed $MCAPS
+          </p>
+          <p>{redeemed}</p>
+        </Description>
+        <Description>
+          <p>
+            <span>💦&thinsp;</span>
+            Remaining $MCAPS
+          </p>
+          <p>{poolCapBalance}</p>
+        </Description>
+        <Shim />
+        <Text>The price of MCAPS changes when tokens are bought and sold.</Text>
 
-          <br />
-          <button onClick={onClose}>Close</button>
-        </CardWrapper>
-        </>
+        <br />
+        <button onClick={onClose}>Close</button>
+      </CardWrapper>
+    </>
   )
 }
 
 const Shim = styled.div`
   height: 2rem;
-  `
+`
 const Title = styled.h2`
   font-weight: 500;
   font-size: 24px;
@@ -71,7 +61,7 @@ const Title = styled.h2`
   width: 100%;
   margin: 0;
   text-align: center;
-  `
+`
 
 const Description = styled.div`
   display: flex;
@@ -96,7 +86,7 @@ const CardWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 20px; 
+  border-radius: 20px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -121,8 +111,6 @@ const OVERLAY_STYLES = styled.div`
   right: 0;
   bottom: 0;
   background: #000;
-  opacity: .8;
-  z-index:998;
+  opacity: 0.8;
+  z-index: 998;
 `
-
-

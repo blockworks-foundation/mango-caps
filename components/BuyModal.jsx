@@ -14,8 +14,6 @@ import { cache, swap } from "../lib/pool"
 import { PublicKey } from "@solana/web3.js"
 
 export default function BuyModal({ open, onClose }) {
-  if (!open) return null
-
   const { connection, config } = useConnection()
   const { wallet, connected } = useWallet()
   const { walletCapAccount, walletCapBalance, walletUsdAccount, refreshWalletAccounts } = useAccounts()
@@ -76,18 +74,20 @@ export default function BuyModal({ open, onClose }) {
     }
   }
 
+  if (!open) return null
+
   return (
     <>
       <OVERLAY_STYLES> </OVERLAY_STYLES>
       <BuyWrapper>
-      <CardWrapper>
-        <FullWidth>
-          <Title>Mango Market Caps Edition 0</Title>
-          <SubTitle>$MCAPS</SubTitle>
-          <Gallery />
-          <MarketData>
-            <span>
-              {/*
+        <CardWrapper>
+          <FullWidth>
+            <Title>Mango Market Caps Edition 0</Title>
+            <SubTitle>$MCAPS</SubTitle>
+            <Gallery />
+            <MarketData>
+              <span>
+                {/*
               <CurrentPrice>
                 ${formattedPrice} USDT &thinsp;
                 <img
@@ -102,47 +102,51 @@ export default function BuyModal({ open, onClose }) {
               </CurrentPrice>
               */}
 
-              <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
-            </span>
-            <Increment>
-              <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={0} max={scalperLimit} />
-            </Increment>
-          </MarketData>
-        </FullWidth>
-      </CardWrapper>
-      <InfoCard>
-        <TitleSub>Here's what you owe:</TitleSub>
-        <Price>
-          ${formattedPrice}{" "}
-          <img
-            height="30px"
-            width="30px"
-            src="/tether_logo.svg"
+                <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
+              </span>
+              <Increment>
+                <IncrementToken amount={amountToBuy} setAmount={setAmountToBuy} min={0} max={scalperLimit} />
+              </Increment>
+            </MarketData>
+          </FullWidth>
+        </CardWrapper>
+        <InfoCard>
+          <TitleSub>Here's what you owe:</TitleSub>
+          <Price>
+            ${formattedPrice}{" "}
+            <img
+              height="30px"
+              width="30px"
+              src="/tether_logo.svg"
+              style={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                marginTop: "-9px",
+              }}
+            />
+          </Price>
+          <Button
+            disabled={buying || hasReachedScalperLimit || (connected && !walletUsdAccount)}
+            onClick={handleClick}
             style={{
-              display: "inline-block",
-              verticalAlign: "middle",
-              marginTop: "-9px",
+              background: connected ? bgConnected : bgDisconnected,
+              opacity: buying || hasReachedScalperLimit || (connected && !walletUsdAccount) ? "50%" : "100%",
             }}
-          />
-        </Price>
-        <Button
-          disabled={buying || hasReachedScalperLimit || (connected && !walletUsdAccount)}
-          onClick={handleClick}
-          style={{
-            background: connected ? bgConnected : bgDisconnected,
-            opacity: buying || hasReachedScalperLimit || (connected && !walletUsdAccount) ? "50%" : "100%",
-          }}
-        >
-          {buying && "⏳ (confirm in wallet) "}
-          {!buying && !(wallet && connected) && "Connect Wallet"}
-          {!buying && wallet && connected && hasReachedScalperLimit && "You bought too many caps! 😅"}
-          {!buying && wallet && connected && !hasReachedScalperLimit && !walletUsdAccount && "You need USDC in your wallet"}
-          {!buying && wallet && connected && !hasReachedScalperLimit && walletUsdAccount && "Buy"}
-
-        </Button>
-        <br />
-        <button onClick={onClose}>Close</button>
-      </InfoCard>
+          >
+            {buying && "⏳ (confirm in wallet) "}
+            {!buying && !(wallet && connected) && "Connect Wallet"}
+            {!buying && wallet && connected && hasReachedScalperLimit && "You bought too many caps! 😅"}
+            {!buying &&
+              wallet &&
+              connected &&
+              !hasReachedScalperLimit &&
+              !walletUsdAccount &&
+              "You need USDC in your wallet"}
+            {!buying && wallet && connected && !hasReachedScalperLimit && walletUsdAccount && "Buy"}
+          </Button>
+          <br />
+          <button onClick={onClose}>Close</button>
+        </InfoCard>
       </BuyWrapper>
     </>
   )

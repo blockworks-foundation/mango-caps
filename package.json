@@ -12,14 +12,13 @@
   "dependencies": {
     "@prisma/client": "^3.0.2",
     "@project-serum/sol-wallet-adapter": "0.1.1",
+    "@solana/buffer-layout": "^4.0.1",
     "@solana/spl-token": "0.0.11",
     "@solana/spl-token-swap": "0.0.2",
     "@solana/web3.js": "^1.2.6",
-    "next": "10.0.9",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-router-dom": "^5.2.0",
-    "react-tilt": "^0.1.4",
+    "next": "^13.5.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -29,10 +28,11 @@
     "autoprefixer": "^10.2.5",
     "babel-plugin-styled-components": "^1.12.0",
     "fast-csv": "^4.3.6",
-    "postcss": "^8.2.8",
+    "postcss": "^8.4.31",
     "prisma": "^3.0.2",
-    "tailwindcss": "^2.0.4",
+    "tailwindcss": "^2.2.19",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
-  }
+    "typescript": "^4.5.2"
+  },
+  "packageManager": "yarn@4.6.0+sha512.5383cc12567a95f1d668fbe762dfe0075c595b4bfff433be478dbbe24e05251a8e8c3eb992a986667c1d53b6c3a9c85b8398c35a960587fbd9fa3a0915406728"
 }

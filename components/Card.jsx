@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
-import Tilt from "react-tilt"
 
 import { usePrice } from "../providers/price"
 
@@ -14,38 +13,33 @@ export default function Card() {
 
   return (
     <>
-      <Tilt
-        style={{ background: "#000", borderRadius: "20px" }}
-        options={{ scale: 1.01, max: 10, glare: true, "max-glare": 1, speed: 1000 }}
-      >
-        <CardWrapper>
-          <Title>Mango Market Caps Edition 0</Title>
-          <SubTitle>$MCAPS</SubTitle>
-          <Gallery />
-          <MarketData>
-            <span>
-              <CurrentPrice>
-                ${formattedPrice}&thinsp;
-                <img
-                  height="20px"
-                  width="20px"
-                  src="/tether_logo.svg"
-                  style={{
-                    display: "inline-block",
-                    verticalAlign: "middle",
-                    marginTop: "-6px",
-                  }}
-                />
-              </CurrentPrice>
-              <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
-            </span>
-            <button onClick={() => setShowInfo(true)}>
-              <InfoButton>?</InfoButton>
-              <Dynamic>Dynamic Pricing Stats</Dynamic>
-            </button>
-          </MarketData>
-        </CardWrapper>
-      </Tilt>
+      <CardWrapper>
+        <Title>Mango Market Caps Edition 0</Title>
+        <SubTitle>$MCAPS</SubTitle>
+        <Gallery />
+        <MarketData>
+          <span>
+            <CurrentPrice>
+              ${formattedPrice}&thinsp;
+              <img
+                height="20px"
+                width="20px"
+                src="/tether_logo.svg"
+                style={{
+                  display: "inline-block",
+                  verticalAlign: "middle",
+                  marginTop: "-6px",
+                }}
+              />
+            </CurrentPrice>
+            <CapCount>{`${amountAvailable}/${totalSupply} available`}</CapCount>
+          </span>
+          <button onClick={() => setShowInfo(true)}>
+            <InfoButton>?</InfoButton>
+            <Dynamic>Dynamic Pricing Stats</Dynamic>
+          </button>
+        </MarketData>
+      </CardWrapper>
       <StatsModal open={showInfo} onClose={() => setShowInfo(false)} />
     </>
   )

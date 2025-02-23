@@ -1,18 +1,12 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import {
-  Account, AccountInfo,
-  Connection,
-  PublicKey,
-  SystemProgram, Transaction,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import React, { useContext, useEffect, useState } from "react"
+import { PublicKey } from "@solana/web3.js"
 
-import { TokenSwapLayout } from '../lib/pool';
-import { useConnection } from '../providers/connection'
+import { TokenSwapLayout } from "../lib/pool"
+import { useConnection } from "../providers/connection"
 
-const PoolContext = React.createContext();
+const PoolContext = React.createContext()
 
-const toPublicKey = (s) => new PublicKey(s);
+const toPublicKey = (s) => new PublicKey(s)
 
 async function toPoolInfo(data, account, program) {
   return {
@@ -27,30 +21,37 @@ async function toPoolInfo(data, account, program) {
     legacy: false,
     raw: data,
   }
-};
+}
 
 export function PoolProvider({ children }) {
+  const { config, connection } = useConnection()
 
-  const { config, connection } = useConnection();
-
-  const [pool, setPool] = useState();
-
-  useEffect(async () => {
-
-    if (!connection) return;
-
-    let response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId));
-    let allPools = await Promise.all(response
-      .filter(s => s.account.data.length === TokenSwapLayout.span)
-      .map(s => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId)));
-    setPool(allPools.find(p =>
-      p.pubkeys.holdingMints.map(m => m.toString()).toString() ===
-      [config.capMint, config.usdMint].toString()));
-  }, [config, connection]);
+  const [pool, setPool] = useState()
 
   useEffect(() => {
+    const fetchPools = async () => {
+      if (!connection) return
 
-  }, [connection, pool]);
+      const response = await connection.getProgramAccounts(toPublicKey(config.swapProgramId))
+      const allPools = await Promise.all(
+        response
+          .filter((s) => {
+            console.log(s.account.data.length)
+            console.log(TokenSwapLayout.span)
+            return s.account.data.length === TokenSwapLayout.span
+          })
+          .map((s) => toPoolInfo(TokenSwapLayout.decode(s.account.data), s.pubkey, config.swapProgramId))
+      )
+      setPool(
+        allPools.find(
+          (p) =>
+            p.pubkeys.holdingMints.map((m) => m.toString()).toString() === [config.capMint, config.usdMint].toString()
+        )
+      )
+    }
+
+    fetchPools()
+  }, [config, connection])
 
   return (
     <PoolContext.Provider
@@ -60,10 +61,9 @@ export function PoolProvider({ children }) {
     >
       {children}
     </PoolContext.Provider>
-  );
-};
-
-export function usePool() {
-  return useContext(PoolContext);
+  )
 }
 
+export function usePool() {
+  return useContext(PoolContext)
+}

@@ -1,50 +1,53 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useMemo, useState } from "react"
+import styled from "styled-components"
 
-export default function ShipmentModal({owner, open, onClose}) {
-
-  const [shipments, setShipments] = useState([]);
-  useEffect(async () => {
-    const findOrderRes = await fetch("/api/shipping", {
+export default function ShipmentModal({ owner, open, onClose }) {
+  const [shipments, setShipments] = useState([])
+  useEffect(() => {
+    const fetchShipments = async () => {
+      const findOrderRes = await fetch("/api/shipping", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          owner
+          owner,
         }),
       })
+      const result = await findOrderRes.json()
+      setShipments(result)
+    }
 
-    const result = await findOrderRes.json();
-    setShipments(result);
-  }, [owner]);
+    fetchShipments()
+  }, [owner])
 
-  if (!open) return null;
+  if (!open) return null
 
   return (
-
-        <>
-        <OVERLAY_STYLES> </OVERLAY_STYLES>
-        <CardWrapper>
+    <>
+      <OVERLAY_STYLES> </OVERLAY_STYLES>
+      <CardWrapper>
         <Title>Your Shipments</Title>
         <br />
-        <Description>
-          {JSON.stringify({owner, shipments})}
-          </Description>
-          <Shim />
-          <Text>
-            Your orders might take up to two weeks to be shipped depending on the destination.
-            If you did not receive it, please reach out on discord or send us an <b><a href="mailto:hello@blockworks.foundation">email</a></b>.
-          </Text>
+        <Description>{JSON.stringify({ owner, shipments })}</Description>
+        <Shim />
+        <Text>
+          Your orders might take up to two weeks to be shipped depending on the destination. If you did not receive it,
+          please reach out on discord or send us an{" "}
+          <b>
+            <a href="mailto:hello@blockworks.foundation">email</a>
+          </b>
+          .
+        </Text>
 
-          <br />
-          <button onClick={onClose}>Close</button>
-        </CardWrapper>
-        </>
+        <br />
+        <button onClick={onClose}>Close</button>
+      </CardWrapper>
+    </>
   )
 }
 
 const Shim = styled.div`
   height: 2rem;
-  `
+`
 const Title = styled.h2`
   font-weight: 500;
   font-size: 24px;
@@ -52,7 +55,7 @@ const Title = styled.h2`
   width: 100%;
   margin: 0;
   text-align: center;
-  `
+`
 
 const Description = styled.div`
   display: flex;
@@ -77,7 +80,7 @@ const CardWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 20px; 
+  border-radius: 20px;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -102,9 +105,6 @@ const OVERLAY_STYLES = styled.div`
   right: 0;
   bottom: 0;
   background: #000;
-  opacity: .8;
-  z-index:998;
+  opacity: 0.8;
+  z-index: 998;
 `
-
-
-

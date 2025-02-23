@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 import RedeemModal from "../components/RedeemModal"
 import { useAccounts } from "../providers/accounts"
@@ -28,7 +28,7 @@ export default function Redeem() {
   const [readDisclaimer, setRedDisclaimer] = useState(false)
   const hasCap = walletCapBalance > 0
 
-  const handleClick = function() {
+  const handleClick = function () {
     if (!readDisclaimer) {
       setShowDisclaimer(true)
       return
@@ -36,7 +36,7 @@ export default function Redeem() {
     setIsOpen(true)
   }
 
-  const handleAcceptDisclaimer = function() {
+  const handleAcceptDisclaimer = function () {
     setRedDisclaimer(true)
     setShowDisclaimer(false)
     setIsOpen(true)
@@ -44,7 +44,7 @@ export default function Redeem() {
 
   return (
     <>
-      {showDisclaimer && <DisclaimerPop onAccept={handleAcceptDisclaimer}/>}
+      {showDisclaimer && <DisclaimerPop onAccept={handleAcceptDisclaimer} />}
       <Button
         disabled={!hasCap}
         style={{

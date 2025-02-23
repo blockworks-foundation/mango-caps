@@ -1,134 +1,144 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import {
-  PublicKey
-} from '@solana/web3.js';
-import * as BufferLayout from "buffer-layout";
+import React, { useContext, useEffect, useMemo, useState } from "react"
+import { PublicKey } from "@solana/web3.js"
+import * as BufferLayout from "buffer-layout"
 
-import { CFG, useConnection } from './connection';
-import { usePool } from './pool';
-import { useWallet } from './wallet';
-import { cache, getCachedAccountByMintAndOwner } from '../lib/pool';
+import { CFG, useConnection } from "./connection"
+import { usePool } from "./pool"
+import { useWallet } from "./wallet"
+import { cache, getCachedAccountByMintAndOwner } from "../lib/pool"
 
-const notify = console.log;
+const notify = console.log
 
-const AccountsContext = React.createContext();
+const AccountsContext = React.createContext()
 
 export function AccountsProvider({ children }) {
+  const { config, connection } = useConnection()
+  const { pool } = usePool()
+  const { connected, wallet } = useWallet()
 
-  const { config, connection } = useConnection();
-  const { pool } = usePool();
-  const { connected, wallet } = useWallet();
+  const mintCapAccount = useMint(config.capMint)
+  const [escrowCapAccount, setEscrowCapAccount] = useState()
+  const [poolCapAccount, setPoolCapAccount] = useState()
+  const [poolUsdAccount, setPoolUsdAccount] = useState()
+  const [walletCapAccount, setWalletCapAccount] = useState()
+  const [walletUsdAccount, setWalletUsdAccount] = useState()
 
-  const mintCapAccount = useMint(config.capMint);
-  const [escrowCapAccount, setEscrowCapAccount] = useState();
-  const [poolCapAccount, setPoolCapAccount] = useState();
-  const [poolUsdAccount, setPoolUsdAccount] = useState();
-  const [walletCapAccount, setWalletCapAccount] = useState();
-  const [walletUsdAccount, setWalletUsdAccount] = useState();
-
-  const [escrowCapBalance, setEscrowCapBalance] = useState(0);
-  const [poolCapBalance, setPoolCapBalance] = useState(0);
-  const [poolUsdBalance, setPoolUsdBalance] = useState(0);
-  const [walletCapBalance, setWalletCapBalance] = useState(0);
-  const [walletUsdBalance, setWalletUsdBalance] = useState(0);
+  const [escrowCapBalance, setEscrowCapBalance] = useState(0)
+  const [poolCapBalance, setPoolCapBalance] = useState(0)
+  const [poolUsdBalance, setPoolUsdBalance] = useState(0)
+  const [walletCapBalance, setWalletCapBalance] = useState(0)
+  const [walletUsdBalance, setWalletUsdBalance] = useState(0)
 
   async function refreshBalance(account, set) {
     if (account) {
-      const _account = await cache.queryAccount(
-        connection,
-        account.pubkey
-      );
+      const _account = await cache.queryAccount(connection, account.pubkey)
 
-      console.log('refreshBalance', account.pubkey.toString(), _account.info.amount.toNumber());
-      set(_account.info.amount.toNumber());
+      console.log("refreshBalance", account.pubkey.toString(), _account.info.amount.toNumber())
+      set(_account.info.amount.toNumber())
     } else {
-      set(0);
+      set(0)
     }
   }
 
-  useEffect(() => refreshBalance(escrowCapAccount, setEscrowCapBalance), [connection, escrowCapAccount]);
-  useEffect(() => refreshBalance(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
-  useEffect(() => refreshBalance(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
-  useEffect(() => refreshBalance(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
-  useEffect(() => refreshBalance(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
-
+  useEffect(() => {
+    refreshBalance(escrowCapAccount, setEscrowCapBalance)
+  }, [connection, escrowCapAccount])
+  useEffect(() => {
+    refreshBalance(poolCapAccount, setPoolCapBalance)
+  }, [connection, poolCapAccount])
+  useEffect(() => {
+    refreshBalance(poolUsdAccount, setPoolUsdBalance)
+  }, [connection, poolUsdAccount])
+  useEffect(() => {
+    refreshBalance(walletCapAccount, setWalletCapBalance)
+  }, [connection, walletCapAccount])
+  useEffect(() => {
+    refreshBalance(walletUsdAccount, setWalletUsdBalance)
+  }, [connection, walletUsdAccount])
 
   const refreshEscrowCapAccount = async () => {
     if (connection) {
-      const capAccount = await cache.queryAccount(
-        connection,
-        CFG[CFG.default].capVault
-      );
-      setEscrowCapAccount(capAccount);
+      const capAccount = await cache.queryAccount(connection, CFG[CFG.default].capVault)
+      setEscrowCapAccount(capAccount)
     }
   }
-  useEffect(refreshEscrowCapAccount, [connection]);
+  useEffect(() => {
+    refreshEscrowCapAccount()
+  }, [connection])
 
   const refreshPoolAccounts = async () => {
     if (connection && pool) {
       // TODO: parallelize
-      const capAccount = await cache.queryAccount(
-        connection,
-        pool.pubkeys.holdingAccounts[0]
-      );
-      setPoolCapAccount(capAccount);
+      const capAccount = await cache.queryAccount(connection, pool.pubkeys.holdingAccounts[0])
+      setPoolCapAccount(capAccount)
 
-      const usdAccount = await cache.queryAccount(
-        connection,
-        pool.pubkeys.holdingAccounts[1]
-      );
-      setPoolUsdAccount(usdAccount);
+      const usdAccount = await cache.queryAccount(connection, pool.pubkeys.holdingAccounts[1])
+      setPoolUsdAccount(usdAccount)
     }
-  };
-  useEffect(refreshPoolAccounts, [connection, pool]);
+  }
+  useEffect(() => {
+    refreshPoolAccounts()
+  }, [connection, pool])
 
   const refreshWalletAccounts = async () => {
     if (!connected || !connection || !wallet?.publicKey) {
-      setWalletCapAccount();
-      setWalletUsdAccount();
-      return;
+      setWalletCapAccount()
+      setWalletUsdAccount()
+      return
     }
 
-    const accounts = await connection.getTokenAccountsByOwner(
-      wallet.publicKey,
-      { programId: new PublicKey(config.tokenProgramId) }
-    );
+    const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, {
+      programId: new PublicKey(config.tokenProgramId),
+    })
 
     // Just hack this in to parse amount from account with minimal other code changes
     const ACCOUNT_LAYOUT = BufferLayout.struct([
       BufferLayout.blob(64),
       BufferLayout.nu64("amount"),
       BufferLayout.blob(93),
-    ]);
+    ])
 
     accounts.value
       .filter((x) => ACCOUNT_LAYOUT.decode(x.account.data).amount > 0)
-      .forEach((a) => cache.addAccount(a.pubkey, a.account));
+      .forEach((a) => cache.addAccount(a.pubkey, a.account))
 
-    const _walletCapAccount = getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey);
-    const _walletUsdAccount = getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey);
-    setWalletCapAccount(_walletCapAccount);
-    setWalletUsdAccount(_walletUsdAccount);
-  };
+    const _walletCapAccount = getCachedAccountByMintAndOwner(config.capMint, wallet.publicKey)
+    const _walletUsdAccount = getCachedAccountByMintAndOwner(config.usdMint, wallet.publicKey)
+    setWalletCapAccount(_walletCapAccount)
+    setWalletUsdAccount(_walletUsdAccount)
+  }
 
-  useEffect(refreshWalletAccounts, [config, connection, connected, wallet]);
+  useEffect(() => {
+    refreshWalletAccounts()
+  }, [config, connection, connected, wallet])
 
   function subscribeToAccount(account, set) {
     if (connection && account) {
       let id = connection.onAccountChange(account.pubkey, (info, context) => {
-        cache.addAccount(account.pubkey, info);
+        cache.addAccount(account.pubkey, info)
         refreshBalance(account, set)
-      });
-      return () => { connection.removeAccountChangeListener(id); };
+      })
+      return () => {
+        connection.removeAccountChangeListener(id)
+      }
     }
   }
 
-  useEffect(() => subscribeToAccount(escrowCapAccount, setEscrowCapBalance), [connection, escrowCapAccount]);
-  useEffect(() => subscribeToAccount(poolCapAccount, setPoolCapBalance), [connection, poolCapAccount]);
-  useEffect(() => subscribeToAccount(poolUsdAccount, setPoolUsdBalance), [connection, poolUsdAccount]);
-  useEffect(() => subscribeToAccount(walletCapAccount, setWalletCapBalance), [connection, walletCapAccount]);
-  useEffect(() => subscribeToAccount(walletUsdAccount, setWalletUsdBalance), [connection, walletUsdAccount]);
-
+  useEffect(() => {
+    subscribeToAccount(escrowCapAccount, setEscrowCapBalance)
+  }, [connection, escrowCapAccount])
+  useEffect(() => {
+    subscribeToAccount(poolCapAccount, setPoolCapBalance)
+  }, [connection, poolCapAccount])
+  useEffect(() => {
+    subscribeToAccount(poolUsdAccount, setPoolUsdBalance)
+  }, [connection, poolUsdAccount])
+  useEffect(() => {
+    subscribeToAccount(walletCapAccount, setWalletCapBalance)
+  }, [connection, walletCapAccount])
+  useEffect(() => {
+    subscribeToAccount(walletUsdAccount, setWalletUsdBalance)
+  }, [connection, walletUsdAccount])
 
   return (
     <AccountsContext.Provider
@@ -144,25 +154,24 @@ export function AccountsProvider({ children }) {
         poolUsdBalance,
         walletCapBalance,
         walletUsdBalance,
-        refreshWalletAccounts
+        refreshWalletAccounts,
       }}
     >
       {children}
     </AccountsContext.Provider>
-  );
-};
+  )
+}
 
 export function useMint(key) {
-  const { connection } = useConnection();
-  const [mint, setMint] = useState();
+  const { connection } = useConnection()
+  const [mint, setMint] = useState()
 
-  const pubkey = new PublicKey(key);
+  const pubkey = new PublicKey(key)
 
   useEffect(() => {
-
-    console.log(`mint ${key}`);
+    console.log(`mint ${key}`)
     if (!key) {
-      return;
+      return
     }
 
     cache
@@ -173,22 +182,21 @@ export function useMint(key) {
           message: err.message,
           type: "error",
         })
-      );
+      )
 
     const id = connection.onAccountChange(pubkey, (account) => {
       if (account) {
-        cache.addMint(pubkey, account);
+        cache.addMint(pubkey, account)
       }
-    });
+    })
     return () => {
-      connection.removeAccountChangeListener(id);
-    };
-  }, [connection, key]);
+      connection.removeAccountChangeListener(id)
+    }
+  }, [connection, key])
 
-  return mint;
-};
-
-export function useAccounts() {
-  return useContext(AccountsContext);
+  return mint
 }
 
+export function useAccounts() {
+  return useContext(AccountsContext)
+}
